@@ -3,13 +3,14 @@ paths:
   - "src/ai/**"
 ---
 
-# AI Code Rules
+# AI / ML Code Rules
 
-- AI update budget: 2ms per frame maximum — profile to verify
-- All AI parameters must be tunable from data files (behavior tree weights, perception ranges, timers)
-- AI must be debuggable: implement visualization hooks for all AI state (paths, perception cones, decision trees)
-- AI should telegraph intentions — players need time to read and react
-- Prefer utility-based or behavior tree approaches over hard-coded if/else chains
-- Group AI must support formation, flanking, and role assignment from data
-- All AI state machines must log transitions for debugging
-- Never trust AI input from the network without validation
+- All model parameters and thresholds must be configurable from data/config files, never hardcoded
+- AI features must degrade gracefully when the model or service is unavailable
+- Log all AI inputs and outputs at debug level to aid in debugging and auditing
+- Never pass sensitive user data (PII, credentials) to external AI APIs without explicit consent and sanitization
+- All AI-generated content must be validated before being persisted or displayed to users
+- Rate-limit AI API calls — implement backoff and circuit-breaker patterns
+- Cache AI responses where appropriate to reduce latency and cost
+- Document the expected input/output contract for every AI feature
+- AI decision logic must be auditable: store enough context to replay or explain decisions

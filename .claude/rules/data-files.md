@@ -1,46 +1,46 @@
 ---
 paths:
   - "assets/data/**"
+  - "config/**"
 ---
 
-# Data File Rules
+# Data & Config File Rules
 
-- All JSON files must be valid JSON — broken JSON blocks the entire build pipeline
-- File naming: lowercase with underscores only, following `[system]_[name].json` pattern
-- Every data file must have a documented schema (either JSON Schema or documented in the corresponding design doc)
-- Numeric values must include comments or companion docs explaining what the numbers mean
-- Use consistent key naming: camelCase for keys within JSON files
-- No orphaned data entries — every entry must be referenced by code or another data file
+- All JSON/YAML files must be valid and schema-validated — broken config must not reach production
+- File naming: lowercase with underscores only, following `[domain]_[name].[ext]` pattern
+- Every data file must have a documented schema (JSON Schema, YAML schema, or documented in the corresponding feature doc)
+- Numeric values must include comments or companion docs explaining their meaning and safe ranges
+- Use consistent key naming: camelCase for JSON keys, snake_case for YAML keys
+- No orphaned entries — every entry must be referenced by code or another config file
 - Version data files when making breaking schema changes
 - Include sensible defaults for all optional fields
+- Secrets must NEVER be stored in data files — use environment variables or a secrets manager
 
 ## Examples
 
-**Correct** naming and structure (`combat_enemies.json`):
+**Correct** naming and structure (`users_roles.json`):
 
 ```json
 {
-  "goblin": {
-    "baseHealth": 50,
-    "baseDamage": 8,
-    "moveSpeed": 3.5,
-    "lootTable": "loot_goblin_common"
+  "admin": {
+    "displayName": "Administrator",
+    "permissions": ["read", "write", "delete"],
+    "sessionTimeoutMinutes": 60
   },
-  "goblin_chief": {
-    "baseHealth": 150,
-    "baseDamage": 20,
-    "moveSpeed": 2.8,
-    "lootTable": "loot_goblin_rare"
+  "viewer": {
+    "displayName": "Viewer",
+    "permissions": ["read"],
+    "sessionTimeoutMinutes": 1440
   }
 }
 ```
 
-**Incorrect** (`EnemyData.json`):
+**Incorrect** (`RoleData.json`):
 
 ```json
 {
-  "Goblin": { "hp": 50 }
+  "Admin": { "perms": ["read", "write", "delete"] }
 }
 ```
 
-Violations: uppercase filename, uppercase key, no `[system]_[name]` pattern, missing required fields.
+Violations: uppercase filename, uppercase key, no `[domain]_[name]` pattern, missing required fields.

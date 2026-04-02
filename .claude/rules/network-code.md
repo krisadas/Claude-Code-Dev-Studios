@@ -1,15 +1,17 @@
 ---
 paths:
   - "src/networking/**"
+  - "src/api/**"
 ---
 
-# Network Code Rules
+# Network & API Code Rules
 
-- Server is AUTHORITATIVE for all gameplay-critical state — never trust the client
-- All network messages must be versioned for forward/backward compatibility
-- Client predicts locally, reconciles with server — implement rollback for mispredictions
-- Handle disconnection, reconnection, and host migration gracefully
-- Rate-limit all network logging to prevent log flooding
-- All networked values must specify replication strategy: reliable/unreliable, frequency, interpolation
-- Bandwidth budget: define and track per-message-type bandwidth usage
-- Security: validate all incoming packet sizes and field ranges
+- Server is AUTHORITATIVE for all business-critical state — never trust the client
+- All API requests and responses must be versioned for forward/backward compatibility
+- Validate all incoming payload sizes, field types, and value ranges — reject malformed input early
+- Handle timeouts, retries, and partial failures explicitly — no silent swallowing of errors
+- Rate-limit all inbound endpoints to prevent abuse
+- All network errors must be logged with enough context to diagnose the failure
+- Authentication tokens must never be logged, even at debug level
+- Use TLS for all external communication — no plaintext in production
+- Document bandwidth/payload budgets for high-frequency endpoints

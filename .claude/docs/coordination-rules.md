@@ -5,9 +5,9 @@
 2. **Horizontal Consultation**: Agents at the same tier may consult each other
    but must not make binding decisions outside their domain.
 3. **Conflict Resolution**: When two agents disagree, escalate to the shared
-   parent. If no shared parent, escalate to `creative-director` for design
+   parent. If no shared parent, escalate to `product-manager` for product/scope
    conflicts or `technical-director` for technical conflicts.
-4. **Change Propagation**: When a design change affects multiple domains, the
-   `producer` agent coordinates the propagation.
+4. **Change Propagation**: When a change affects multiple domains, the
+   `product-manager` agent coordinates the propagation.
 5. **No Unilateral Cross-Domain Changes**: An agent must never modify files
    outside its designated directories without explicit delegation.

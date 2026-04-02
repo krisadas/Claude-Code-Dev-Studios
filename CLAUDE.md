@@ -1,26 +1,26 @@
-# Claude Code Game Studios -- Game Studio Agent Architecture
+# Claude Code Software Studios -- Software Studio Agent Architecture
 
-Indie game development managed through 48 coordinated Claude Code subagents.
+Software development managed through 13 coordinated Claude Code subagents.
 Each agent owns a specific domain, enforcing separation of concerns and quality.
 
 ## Technology Stack
 
-- **Engine**: [CHOOSE: Godot 4 / Unity / Unreal Engine 5]
-- **Language**: [CHOOSE: GDScript / C# / C++ / Blueprint]
-- **Version Control**: Git with trunk-based development
-- **Build System**: [SPECIFY after choosing engine]
-- **Asset Pipeline**: [SPECIFY after choosing engine]
+### Frontend
+- **Frameworks**: React, Next.js, Angular
+- **Language**: TypeScript (preferred), JavaScript
 
-> **Note**: Engine-specialist agents exist for Godot, Unity, and Unreal with
-> dedicated sub-specialists. Use the set matching your engine.
+### Backend
+- **Runtimes / Frameworks**: Node.js, Golang, Python
+- **Common patterns**: REST APIs, GraphQL, gRPC
+
+### Shared
+- **Version Control**: Git with trunk-based development
+- **Database**: [SPECIFY per project: PostgreSQL / MySQL / MongoDB / Redis]
+- **Deployment**: [SPECIFY per project: Docker / Kubernetes / serverless]
 
 ## Project Structure
 
 @.claude/docs/directory-structure.md
-
-## Engine Version Reference
-
-@docs/engine-reference/godot/VERSION.md
 
 ## Technical Preferences
 
@@ -42,7 +42,7 @@ Every task follows: **Question -> Options -> Decision -> Draft -> Approval**
 
 See `docs/COLLABORATIVE-DESIGN-PRINCIPLE.md` for full protocol and examples.
 
-> **First session?** If the project has no engine configured and no game concept,
+> **First session?** If the project has no stack configured and no product concept,
 > run `/start` to begin the guided onboarding flow.
 
 ## Coding Standards

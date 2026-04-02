@@ -4,7 +4,6 @@ description: "Creates a structured bug report from a description, or analyzes co
 argument-hint: "[description]
 /bug-report analyze [path-to-file]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write
 ---
 
 When invoked with a description:

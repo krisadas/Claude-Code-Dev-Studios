@@ -1,43 +1,44 @@
 # Technical Preferences
 
-<!-- Populated by /setup-engine. Updated as the user makes decisions throughout development. -->
+<!-- Updated as the team makes decisions throughout development. -->
 <!-- All agents reference this file for project-specific standards and conventions. -->
 
-## Engine & Language
+## Stack
 
-- **Engine**: [TO BE CONFIGURED — run /setup-engine]
-- **Language**: [TO BE CONFIGURED]
-- **Rendering**: [TO BE CONFIGURED]
-- **Physics**: [TO BE CONFIGURED]
+- **Frontend Frameworks**: React, Next.js, Angular
+- **Frontend Language**: TypeScript (preferred), JavaScript
+- **Backend Runtimes**: Node.js, Golang, Python
+- **Database**: [SPECIFY per project]
+- **Deployment Target**: [SPECIFY per project]
 
 ## Naming Conventions
 
-- **Classes**: [TO BE CONFIGURED]
-- **Variables**: [TO BE CONFIGURED]
-- **Signals/Events**: [TO BE CONFIGURED]
+- **Classes/Interfaces**: [TO BE CONFIGURED]
+- **Variables/Functions**: [TO BE CONFIGURED]
+- **Events**: [TO BE CONFIGURED]
 - **Files**: [TO BE CONFIGURED]
-- **Scenes/Prefabs**: [TO BE CONFIGURED]
+- **Database Tables/Collections**: [TO BE CONFIGURED]
 - **Constants**: [TO BE CONFIGURED]
 
 ## Performance Budgets
 
-- **Target Framerate**: [TO BE CONFIGURED]
-- **Frame Budget**: [TO BE CONFIGURED]
-- **Draw Calls**: [TO BE CONFIGURED]
+- **API Response Time (p95)**: [TO BE CONFIGURED]
+- **Page Load (LCP)**: [TO BE CONFIGURED]
+- **Bundle Size**: [TO BE CONFIGURED]
 - **Memory Ceiling**: [TO BE CONFIGURED]
 
 ## Testing
 
 - **Framework**: [TO BE CONFIGURED]
 - **Minimum Coverage**: [TO BE CONFIGURED]
-- **Required Tests**: Balance formulas, gameplay systems, networking (if applicable)
+- **Required Tests**: Core business logic, API endpoints, critical user flows
 
 ## Forbidden Patterns
 
 <!-- Add patterns that should never appear in this project's codebase -->
 - [None configured yet — add as architectural decisions are made]
 
-## Allowed Libraries / Addons
+## Allowed Libraries / Dependencies
 
 <!-- Add approved third-party dependencies here -->
 - [None configured yet — add as dependencies are approved]

@@ -1,9 +1,8 @@
 ---
 name: patch-notes
-description: "Generate player-facing patch notes from git history, sprint data, and internal changelogs. Translates developer language into clear, engaging player communication."
+description: "Generate user-facing release notes from git history, sprint data, and internal changelogs. Translates developer language into clear, engaging user communication."
 argument-hint: "[version] [--style brief|detailed|full]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Bash
 ---
 
 When this skill is invoked:
@@ -17,40 +16,41 @@ When this skill is invoked:
    - Read the internal changelog at `production/releases/[version]/changelog.md` if it exists
    - Run `git log` between the previous release tag and current tag/HEAD
    - Read sprint retrospectives in `production/sprints/` for context
-   - Read any balance change documents in `design/balance/`
    - Read bug fix records from QA if available
 
-3. **Categorize all changes** into player-facing categories:
-   - **New Content**: new features, maps, characters, items, modes
-   - **Gameplay Changes**: balance adjustments, mechanic changes, progression changes
-   - **Quality of Life**: UI improvements, convenience features, accessibility
-   - **Bug Fixes**: grouped by system (combat, UI, networking, etc.)
-   - **Performance**: optimization improvements players might notice
+3. **Categorize all changes** into user-facing categories:
+   - **New Features**: new capabilities, integrations, or workflows
+   - **Improvements**: enhancements to existing features, performance, UX changes
+   - **Bug Fixes**: grouped by area (API, UI, data, etc.)
+   - **Breaking Changes**: anything that changes existing behavior or requires migration
    - **Known Issues**: transparency about unresolved problems
 
-4. **Translate developer language to player language**:
-   - "Refactored damage calculation pipeline" → "Improved hit detection accuracy"
-   - "Fixed null reference in inventory manager" → "Fixed a crash when opening inventory"
-   - "Reduced GC allocations in combat loop" → "Improved combat performance"
-   - Remove purely internal changes that don't affect players
-   - Preserve specific numbers for balance changes (damage: 50 → 45)
+4. **Translate developer language to user language**:
+   - "Refactored database query layer" → "Improved response times for large datasets"
+   - "Fixed null pointer in session manager" → "Fixed a crash when logging out during an active request"
+   - "Reduced GC pressure in request handler" → "Improved API throughput under load"
+   - Remove purely internal changes that don't affect users
+   - Preserve specific numbers for breaking changes and performance improvements
 
-5. **Generate the patch notes** using the appropriate style:
+5. **Generate the release notes** using the appropriate style:
 
 ### Brief Style
 ```markdown
-# Patch [Version] — [Title]
+# Release [Version] — [Title]
 
 **New**
 - [Feature 1]
 - [Feature 2]
 
-**Changes**
-- [Balance/mechanic change with before → after values]
+**Improved**
+- [Improvement with before → after context where relevant]
 
-**Fixes**
+**Fixed**
 - [Bug fix 1]
 - [Bug fix 2]
+
+**Breaking Changes**
+- [Breaking change + migration note]
 
 **Known Issues**
 - [Issue 1]
@@ -58,40 +58,30 @@ When this skill is invoked:
 
 ### Detailed Style
 ```markdown
-# Patch [Version] — [Title]
+# Release [Version] — [Title]
 *[Date]*
 
 ## Highlights
-[1-2 sentence summary of the most exciting changes]
+[1-2 sentence summary of the most impactful changes]
 
-## New Content
+## New Features
 ### [Feature Name]
-[2-3 sentences describing the feature and why players should be excited]
+[2-3 sentences describing the feature and how it benefits users]
 
-## Gameplay Changes
-### Balance
-| Change | Before | After | Reason |
-| ---- | ---- | ---- | ---- |
-| [Item/ability] | [old value] | [new value] | [brief rationale] |
-
-### Mechanics
-- **[Change]**: [explanation of what changed and why]
-
-## Quality of Life
-- [Improvement with context]
+## Improvements
+| Area | Change | Impact |
+| ---- | ------ | ------ |
+| [API] | [what changed] | [what users notice] |
 
 ## Bug Fixes
-### Combat
-- Fixed [description of what players experienced]
+### API / Backend
+- Fixed [description of what users experienced]
 
-### UI
+### UI / Frontend
 - Fixed [description]
 
-### Networking
-- Fixed [description]
-
-## Performance
-- [Improvement players will notice]
+## Breaking Changes
+- **[Change]**: [what changed, migration steps if needed]
 
 ## Known Issues
 - [Issue and workaround if available]
@@ -102,19 +92,19 @@ Includes everything from Detailed, plus:
 ```markdown
 ## Developer Commentary
 ### [Topic]
-> [Developer insight into a major change — why it was made, what was considered,
+> [Engineering insight into a major change — why it was made, what was considered,
 > what the team learned. Written in first-person team voice.]
 ```
 
 6. **Review the output** for:
-   - No internal jargon (replace technical terms with player-friendly language)
-   - No references to internal systems, tickets, or sprint numbers
-   - Balance changes include before/after values
-   - Bug fixes describe the player experience, not the technical cause
-   - Tone matches the game's voice (adjust formality based on game style)
+   - No internal jargon (replace technical terms with user-friendly language)
+   - No references to internal tickets, sprint numbers, or PR numbers
+   - Breaking changes have migration steps
+   - Bug fixes describe the user experience, not the technical cause
+   - Tone is clear and professional
 
-7. **Save the patch notes** to `production/releases/[version]/patch-notes.md`,
+7. **Save the release notes** to `production/releases/[version]/release-notes.md`,
    creating the directory if needed.
 
-8. **Output to the user**: the complete patch notes, the file path, a count of
+8. **Output to the user**: the complete release notes, the file path, a count of
    changes by category, and any internal changes that were excluded (for review).

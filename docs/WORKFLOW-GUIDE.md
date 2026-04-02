@@ -1,10 +1,10 @@
-# Claude Code Game Studios -- Complete Workflow Guide
+# Claude Code Software Studios -- Complete Workflow Guide
 
-> **How to go from zero to a shipped game using the Agent Architecture.**
+> **How to go from zero to a shipped product using the Agent Architecture.**
 >
-> This guide walks you through every phase of game development using the
-> 48-agent system, 37 slash commands, and automated hooks. It assumes you
-> have Claude Code installed and are working from the project root.
+> This guide walks you through every phase of software development using the
+> 13-agent system and slash commands. It assumes you have Claude Code installed
+> and are working from the project root.
 
 ---
 
@@ -12,15 +12,15 @@
 
 1. [Phase 0: Setup & Configuration](#phase-0-setup--configuration)
 2. [Phase 1: Ideation & Concept](#phase-1-ideation--concept)
-3. [Phase 2: Pre-Production & Design](#phase-2-pre-production--design)
+3. [Phase 2: Design & Architecture](#phase-2-design--architecture)
 4. [Phase 3: Prototyping & Validation](#phase-3-prototyping--validation)
-5. [Phase 4: Production Sprint Workflow](#phase-4-production-sprint-workflow)
+5. [Phase 4: Sprint Workflow](#phase-4-sprint-workflow)
 6. [Phase 5: Implementation Deep-Dive](#phase-5-implementation-deep-dive)
 7. [Phase 6: Testing & Quality Assurance](#phase-6-testing--quality-assurance)
-8. [Phase 7: Polish & Optimization](#phase-7-polish--optimization)
+8. [Phase 7: Polish & Hardening](#phase-7-polish--hardening)
 9. [Phase 8: Localization & Accessibility](#phase-8-localization--accessibility)
 10. [Phase 9: Release & Launch](#phase-9-release--launch)
-11. [Phase 10: Post-Launch & Live Ops](#phase-10-post-launch--live-ops)
+11. [Phase 10: Post-Launch](#phase-10-post-launch)
 12. [Appendix A: Agent Quick-Reference](#appendix-a-agent-quick-reference)
 13. [Appendix B: Slash Command Quick-Reference](#appendix-b-slash-command-quick-reference)
 14. [Appendix C: Common Workflows](#appendix-c-common-workflows)
@@ -34,69 +34,58 @@
 Before you start, make sure you have:
 
 - **Claude Code** installed and working
-- **Git** with Git Bash (Windows) or standard terminal (Mac/Linux)
+- **Git** with standard terminal (Mac/Linux) or Git Bash (Windows)
 - **jq** (optional but recommended -- hooks fall back to `grep` if missing)
-- **Python 3** (optional -- some hooks use it for JSON validation)
+- **Node.js / Python / Go** depending on your chosen stack
 
 ### Step 0.1: Clone and Configure
 
 Clone the repository and open it in your editor:
 
 ```bash
-git clone <repo-url> my-game
-cd my-game
+git clone <repo-url> my-project
+cd my-project
 ```
 
 ### Step 0.2: Run /start (Recommended for New Users)
 
-If you're new to the project or don't yet know what game you're building:
+If you're new to the project or don't yet have a product concept:
 
 ```
 /start
 ```
 
 This guided onboarding asks where you are (no idea, vague idea, clear concept,
-existing work) and routes you to the right phase. Skip this if you already have
-a game concept and engine decision.
+existing work) and routes you to the right phase.
 
-### Step 0.3: Choose Your Engine
+### Step 0.3: Configure Your Stack
 
-Run `/setup-engine` in Claude Code. This is the single most important
-configuration step -- it tells every agent what engine, language, and toolchain
-you're using:
+Edit the Technology Stack section in `CLAUDE.md` directly, or ask the
+`technical-director` agent to help you choose:
 
-```bash
-/setup-engine godot 4.6
+```
+Ask the technical-director to recommend a stack for a web app
+with a React frontend, RESTful API, and PostgreSQL database.
 ```
 
-Or run `/setup-engine` with no arguments to get an interactive recommendation
-based on your game's needs (2D/3D, platforms, team size, language preferences).
+**What to configure:**
+- Frontend framework (React, Next.js, or Angular)
+- Backend language/framework (Node.js, Golang, or Python)
+- Database
+- Deployment target
+- Populate `.claude/docs/technical-preferences.md` with naming conventions
+  and performance budgets
 
-**What `/setup-engine` does:**
+> **Manual alternative:** Edit the Technology Stack section in `CLAUDE.md`
+> directly, then fill in `.claude/docs/technical-preferences.md`.
 
-- Pins the engine and version in `CLAUDE.md`
-- Populates `.claude/docs/technical-preferences.md` with naming conventions,
-  performance budgets, and engine-specific defaults
-- Detects knowledge gaps (engine version newer than LLM training data) and
-  fetches current docs from the web so agents suggest correct APIs
-- Creates version-pinned reference docs in `docs/engine-reference/`
-
-**Why this matters:** Once you set the engine, the system knows which
-engine-specialist agents to use. If you pick Godot, agents like
-`godot-specialist`, `godot-gdscript-specialist`, and `godot-shader-specialist`
-become your go-to experts. The Unity and Unreal specialists remain available
-but won't be primary.
-
-> **Manual alternative:** You can also edit the Technology Stack section in
-> `CLAUDE.md` directly if you prefer.
-
-### Step 0.3: Verify Hooks Are Working
+### Step 0.4: Verify Hooks Are Working
 
 Start a new Claude Code session. You should see output from the
 `session-start.sh` hook:
 
 ```
-=== Claude Code Game Studios -- Session Context ===
+=== Claude Code Software Studios -- Session Context ===
 Branch: main
 Recent commits:
   abc1234 Initial commit
@@ -106,35 +95,28 @@ Recent commits:
 If you see this, hooks are working. If not, check `.claude/settings.json` to
 make sure the hook paths are correct for your OS.
 
-### Step 0.4: Create Your Directory Structure
+### Step 0.5: Create Your Directory Structure
 
-The directories listed in `CLAUDE.md` don't all exist yet. Create them as
-needed -- the system expects this layout:
+Create directories as needed -- the system expects this layout:
 
 ```
-src/                  # Game source code
-  core/               # Engine/framework code
-  gameplay/           # Gameplay systems
-  ai/                 # AI systems
-  networking/         # Multiplayer code
-  ui/                 # UI code
-  tools/              # Dev tools
-assets/               # Game assets
-  art/                # Sprites, models, textures
-  audio/              # Music, SFX
-  vfx/                # Particle effects
-  shaders/            # Shader files
-  data/               # JSON config/balance data
+src/                  # Application source code
+  core/               # Shared utilities and core logic
+  api/                # Backend API / services
+  frontend/           # Frontend application
+  workers/            # Background jobs / async workers
+assets/               # Static assets
+  data/               # JSON config / seed data
 design/               # Design documents
-  gdd/                # Game design documents
-  narrative/          # Story, lore, dialogue
-  levels/             # Level design documents
-  balance/            # Balance spreadsheets and data
-docs/                 # Technical documentation
+  features/           # Feature specification documents
   architecture/       # Architecture Decision Records
-  api/                # API documentation
+docs/                 # Technical documentation
+  api/                # API documentation (OpenAPI specs)
   postmortems/        # Post-mortems
 tests/                # Test suites
+  unit/
+  integration/
+  performance/
 prototypes/           # Throwaway prototypes
 production/           # Sprint plans, milestones, releases
   sprints/
@@ -143,10 +125,9 @@ production/           # Sprint plans, milestones, releases
 ```
 
 > **Tip:** You don't need all of these on day one. Create directories as you
-> reach the phase that needs them. The important thing is to follow this
-> structure when you do create them, because the **rules system** enforces
-> standards based on file paths. Code in `src/gameplay/` gets gameplay rules,
-> code in `src/ai/` gets AI rules, and so on.
+> reach the phase that needs them. The **rules system** enforces standards
+> based on file paths — code in `src/api/` gets network code rules,
+> code in `src/core/` gets core code rules, and so on.
 
 ---
 
@@ -154,339 +135,186 @@ production/           # Sprint plans, milestones, releases
 
 ### What Happens in This Phase
 
-You go from "no idea" or "vague idea" to a structured game concept document.
-This is where you figure out **what** you're making.
+You go from "no idea" or "vague idea" to a structured product concept document.
+This is where you figure out **what** you're building and **for whom**.
 
 > **Tip:** If you ran `/start` in Phase 0 and chose Path A or B, you're already
 > here. `/start` routes you to `/brainstorm` automatically.
 
 ### Step 1.1: Brainstorm With `/brainstorm`
 
-This is your starting point if you skipped `/start`. Run the brainstorm skill:
-
 ```
 /brainstorm
 ```
 
-Or with a genre hint:
+Or with a domain hint:
 
 ```
-/brainstorm roguelike deckbuilder
+/brainstorm developer tooling
 ```
 
-**What happens:** The brainstorm skill guides you through a collaborative 6-phase
-ideation process using professional studio techniques:
+**What happens:** The skill guides you through collaborative product discovery:
 
-Agent: "Let's explore game concepts. What genre or theme interests you? (Optional,
-       or leave blank for open exploration)"
+Agent: "Let's explore product concepts. What problem space interests you? (Optional)"
 
-User: "Roguelike deckbuilder"
+User: "Developer tooling — something that helps teams ship faster"
 
-Agent: "I've generated 10 concept seeds combining roguelike and deckbuilder mechanics.
-       Here are the top 3:
+Agent: "I've generated 3 product directions in the developer tooling space:
 
-       **Concept A: Spell Compiler** - Code-themed deckbuilder where cards are functions
-       **Concept B: Memory Palace** - Psychological thriller where cards are memories
-       **Concept C: Ecosystem Builder** - Nature theme where cards are species
+       **Direction A: Automated Code Review** — AI-powered review that understands context
+       **Direction B: Deployment Intelligence** — Predictive deployment risk analysis
+       **Direction C: Onboarding Accelerator** — Reduces time-to-productivity for new hires
 
-       Which concept(s) would you like me to develop with MDA analysis?"
+       Which direction resonates? Or shall I explore more?"
 
-User: "Concept B sounds unique"
+User: "Direction B sounds differentiated"
 
-Agent: [Performs MDA Analysis, Player Motivation mapping, Audience Targeting, Verb-First
-       Design for Concept B, showing work at each stage and asking for feedback]
+Agent: [Performs Jobs-to-be-Done analysis, user profiling, MVP definition, stack
+       recommendation for Direction B, asking for feedback at each stage]
 
-       "Here's the complete analysis. Should I formalize this into a structured
-       concept document?"
+       "Here's the complete analysis. Should I formalize this into a
+       product concept document?"
 
 User: "Yes"
 
-Agent: [Creates structured concept document with top ideas, target audience,
-       core mechanics, and emotional goals]
+Agent: [Creates structured concept doc with value proposition, pillars, user segments,
+       MVP scope, and stack recommendation]
 
-### Step 1.2: Document the Winning Concept
+### Step 1.2: Document the Product Concept
 
-Take the brainstorm output and formalize it. Use the **game concept template**:
+The brainstorm output becomes `design/product-concept.md`. This document includes:
+- One-sentence value proposition
+- Primary user segment
+- Core user flow (onboarding moment, daily use, retention hook)
+- Product pillars (3-5 design principles that guide decisions)
+- Anti-features (what this product explicitly does NOT do)
+- MVP definition
+- Stack recommendation
 
-```
-Ask Claude to create a game concept document using the template at
-.claude/docs/templates/game-concept.md
-```
+### Step 1.3: Define Your Product Pillars
 
-This template includes:
-- Elevator pitch (one sentence)
-- Core fantasy (what the player imagines themselves doing)
-- MDA breakdown
-- Target audience (Bartle types, demographics)
-- Core loop diagram
-- Unique selling proposition
-- Comparable titles and differentiation
+Lock in **3-5 pillars** before going further. Example pillars:
+- **Zero Config**: Works out of the box without setup friction
+- **Signal over Noise**: Every alert is actionable, never spammy
+- **Team-Aware**: Understands team context, not just individual activity
 
-### Step 1.3: Define Your Game Pillars
+Also define **anti-features**:
+- We do NOT pursue: gamification, social feeds, manual configuration
 
-Before you go further, lock in your **game pillars** -- the 3-5 non-negotiable
-design values that guide every decision. Use the template:
-
-```
-Ask Claude to create a game pillars document using the template at
-.claude/docs/templates/game-pillars.md
-```
-
-Example pillars:
-- **Meaningful Choices**: Every decision changes something permanently
-- **Emergent Storytelling**: Systems create unique narratives, not scripts
-- **Accessible Depth**: Easy to start, deep to master
-
-Also define **anti-pillars** -- things your game intentionally avoids:
-- We do NOT pursue: photorealism, competitive balance, linear narrative
-
-> **When you're happy with your concept and pillars, you're ready for
-> Pre-Production.**
+> **When you're happy with your concept and pillars, you're ready for Design.**
 
 ---
 
-## Phase 2: Pre-Production & Design
+## Phase 2: Design & Architecture
 
 ### What Happens in This Phase
 
-You create all the design documents that define how your game works. Nothing
-gets coded yet -- this is pure design and architecture.
+You create all the feature specifications and architecture decisions that define
+how your product works. This is design and architecture — not yet implementation.
 
-### Step 2.1: Decompose Your Concept Into Systems
+### Step 2.1: Spec Each Feature With `/design-system`
 
-Before writing individual GDDs, enumerate all the systems your game needs:
-
-```
-/map-systems
-```
-
-This creates `design/gdd/systems-index.md` — a master tracking document that:
-
-- Lists every system your game needs (combat, movement, UI, etc.)
-- Maps dependencies between systems
-- Assigns priority tiers (MVP, Vertical Slice, Alpha, Full Vision)
-- Determines design order (Foundation → Core → Feature → Presentation → Polish)
-
-Then design each system in dependency order:
+For each feature in your product, create a specification:
 
 ```
-/map-systems next
+/design-system user-authentication
 ```
 
-This picks the highest-priority undesigned system and hands off to `/design-system`,
-which guides you through creating its GDD section by section. Each completed GDD
-goes through `/design-review` before the next starts.
-
-You can also write a specific system's GDD directly:
-
-```
-/design-system combat-system
-```
-
-### Step 2.2: Create the Game Design Document (GDD)
-
-For each major system in your game, create a design document in `design/gdd/`.
-Use the template:
-
-```
-Ask Claude to create a GDD using the template at
-.claude/docs/templates/game-design-document.md
-```
-
-**The `design-docs` rule** (`.claude/rules/design-docs.md`) requires every GDD
-to have these 8 sections:
+This guides you through creating a complete feature spec in `design/features/`
+section by section. Each spec requires these 8 sections:
 
 | # | Section | What Goes Here |
 |---|---------|---------------|
-| 1 | **Overview** | One-paragraph summary of the system |
-| 2 | **Player Fantasy** | What the player imagines/feels when using this system |
-| 3 | **Detailed Rules** | Unambiguous mechanical rules -- if two designers read this, they'd build the same thing |
-| 4 | **Formulas** | Every calculation, with variable definitions and ranges |
-| 5 | **Edge Cases** | What happens in weird situations? Explicitly resolved. |
-| 6 | **Dependencies** | What other systems this connects to (bidirectional) |
-| 7 | **Tuning Knobs** | Which values designers can safely change, with safe ranges |
-| 8 | **Acceptance Criteria** | How do you test that this works? Specific, measurable. |
+| 1 | **Overview** | One-paragraph summary |
+| 2 | **User Story** | Who uses this and why |
+| 3 | **Detailed Requirements** | Unambiguous specs — if two engineers read this, they'd build the same thing |
+| 4 | **Data Models** | Key entities and relationships |
+| 5 | **Edge Cases** | What happens in unusual situations |
+| 6 | **Dependencies** | Other features/services this relies on (bidirectional) |
+| 7 | **Configuration** | Values operators can adjust, with safe ranges |
+| 8 | **Acceptance Criteria** | Testable success conditions |
 
-**Example GDD files you might create:**
-- `design/gdd/core-loop.md` -- The fundamental play loop
-- `design/gdd/combat-system.md` -- How combat works
-- `design/gdd/progression-system.md` -- How the player advances
-- `design/gdd/inventory-system.md` -- Item management
-- `design/gdd/ability-system.md` -- Player abilities and skills
+**Example feature specs you might create:**
+- `design/features/user-auth.md` — Authentication and authorization
+- `design/features/dashboard.md` — Main user dashboard
+- `design/features/notifications.md` — Alert and notification system
+- `design/features/api-keys.md` — API key management
 
-### Step 2.2: Use the Game Designer Agent for Complex Mechanics
+### Step 2.2: Design Review
 
-For systems that need deep mechanical thinking, delegate to `game-designer`:
-
-```
-Ask the game-designer agent to design a crafting system that supports
-emergent recipes (players discover combinations) with a skill progression
-tied to experimentation. The system should feel rewarding without being
-grindy. Target audience is Explorers and Achievers.
-```
-
-**What happens:** The `game-designer` agent collaborates with you to create the design:
-
-Agent: "I'll help design the crafting system. First, some questions:
-       - Should recipes be discovered through experimentation or taught explicitly?
-       - How punishing should failed crafting attempts be?
-       - Target audience - primarily Explorers or Achievers?"
-
-User: "Discovered through experimentation. Moderate punishment - waste ingredients
-      but gain partial skill XP. Target Explorers primarily."
-
-Agent: "Based on that, here are three mechanical approaches:
-
-       **Option A: Pure Discovery** - No hints, full freedom
-       Pros: Maximum exploration reward
-       Cons: High frustration risk, may need wiki
-
-       **Option B: Hint System** - Visual cues when ingredients are compatible
-       Pros: Guided exploration, less frustration
-       Cons: Less satisfying 'eureka' moments
-
-       **Option C: Hybrid** - Free experimentation + optional journal hints unlocked by skill
-       Pros: Supports both playstyles, progressive scaffolding
-       Cons: More complex to implement
-
-       I recommend Option C because it respects Explorers while providing safety nets,
-       and the journal hints can be gated behind skill progression for Achievers.
-       Which approach fits your vision?"
-
-User: "Option C sounds perfect"
-
-Agent: [Drafts GDD sections iteratively - Overview, Player Fantasy, Detailed Rules,
-       Formulas, Edge Cases - showing each and incorporating feedback]
-
-       "I need detailed formula work for success rates and skill progression curves.
-       Let me consult the systems-designer for the math."
-
-Agent: [After consultation] "Complete draft ready with formulas validated by
-       systems-designer. The economy-designer flagged that ingredient costs
-       need balancing - I've incorporated their recommendations.
-
-       May I write this to design/gdd/crafting-system.md?"
-
-User: "Yes"
-
-Agent: [Writes file]
-
-### Step 2.3: Design Review
-
-Before any design doc goes to programmers, run a review:
+Before any spec goes to engineers, run a review:
 
 ```
-/design-review design/gdd/crafting-system.md
+/design-review design/features/user-auth.md
 ```
 
-**What happens:** The skill checks the document against the 8-section
-standard, verifying:
+The skill checks the document against the 8-section standard:
 - Are all sections present and complete?
-- Are formulas unambiguous with defined variables?
+- Are requirements unambiguous?
+- Are API contracts defined?
 - Are edge cases explicitly resolved (not "TBD")?
-- Do dependencies list both directions?
 - Are acceptance criteria testable?
 
 Fix any issues flagged before proceeding.
 
-### Step 2.4: Create Narrative Design (if applicable)
-
-If your game has story, lore, or dialogue, this is when you build it:
-
-1. **World-building** -- Use `world-builder` to define factions, history,
-   geography, and rules of your world
-2. **Story structure** -- Use `narrative-director` to design story arcs,
-   character arcs, and narrative beats
-3. **Character sheets** -- Use the `narrative-character-sheet.md` template
-   for each major character
-
-The `narrative` rule (`.claude/rules/narrative.md`) enforces:
-- Lore consistency across documents
-- Canon levels (Core Canon vs Flavor vs Apocrypha)
-- Character voice profiles
-- World rule documentation
-
-### Step 2.5: Technical Architecture
+### Step 2.3: Technical Architecture
 
 Before coding starts, make key technical decisions:
 
 ```
-/architecture-decision "State Machine vs Behavior Tree for NPC AI"
+/architecture-decision "REST vs GraphQL for our API layer"
 ```
 
 **What happens:** The skill guides you through creating an Architecture Decision Record:
 
-Agent: "I'll help document this architectural decision. First, let me understand
-       the context. What's driving this decision right now?"
+Agent: "I'll help document this decision. What's driving the choice right now?"
 
-User: "We need to choose between state machine and behavior tree for NPC AI.
-      We have 50+ enemy types planned."
+User: "We need to decide between REST and GraphQL for our API. We have 3 client
+      types: web app, mobile, and third-party integrations."
 
-Agent: "Given 50+ enemy types, here's my analysis:
+Agent: "Given 3 client types with different data needs, here's my analysis:
 
-       **Option A: Finite State Machine**
-       Pros: Simple, debuggable, less overhead
-       Cons: Becomes unwieldy with complex behaviors, hard to reuse logic
+       **Option A: REST**
+       Pros: Simple, well-understood, easy to cache, great tooling
+       Cons: Over-fetching for mobile, multiple endpoints for complex views
 
-       **Option B: Behavior Tree**
-       Pros: Highly reusable, scales well, visual debugging
-       Cons: Steeper learning curve, slightly more overhead
+       **Option B: GraphQL**
+       Pros: Flexible queries, single endpoint, great for varied clients
+       Cons: Complexity, caching harder, learning curve, N+1 query risk
 
-       **Option C: Utility AI**
-       Pros: Emergent behaviors, dynamic decision-making
-       Cons: Harder to debug, needs careful tuning
+       **Option C: REST with view-specific endpoints**
+       Pros: Performance of REST, solves over-fetching, simple to cache
+       Cons: More endpoints to maintain
 
-       For 50+ types, I recommend Behavior Trees - the reusability and
-       scalability outweigh the learning curve.
+       For 3 different client types, I recommend Option A (REST) initially —
+       the complexity cost of GraphQL isn't justified until you have proven
+       over-fetching is a real pain point. You can migrate later.
 
        Should I create an ADR documenting this decision?"
 
-User: "Yes, go with Behavior Trees"
+User: "Yes, go with REST"
 
-Agent: [Creates ADR in docs/architecture/ with context, decision drivers,
-       all options with pros/cons, chosen option with rationale, and consequences]
+Agent: [Creates ADR in docs/architecture/ with context, options, rationale, consequences]
 
 **For complex architectural decisions, use the `technical-director` agent:**
 
 ```
-Ask the technical-director agent to evaluate whether we should use an
-ECS architecture or a traditional component system for our gameplay
-entities, considering our team size (solo) and engine choice (Godot 4).
+Ask the technical-director to evaluate whether we should use a monolith
+or microservices architecture for our initial launch, given we're a team
+of 2 with a 3-month timeline.
 ```
 
-Agent: "Let me analyze the ECS vs traditional component decision for your context:
+### Step 2.4: Milestone Planning
 
-       [Performs detailed analysis considering Godot 4's scene system, solo dev
-       workflow, learning curve, debugging tools, performance needs]
+Define your project milestones:
 
-       **Recommendation: Traditional Godot node-based components**
+1. **MVP** — Core value proposition working end-to-end, no polish
+2. **Private Beta** — All planned features functional, invited users only
+3. **Public Beta** — Content-complete, accepting all users, gathering feedback
+4. **v1.0** — Production-ready, performance targets met, fully supported
 
-       Reasoning: [Detailed rationale]
-
-       Shall I create an ADR documenting this decision with full analysis?"
-
-User: "Yes"
-
-Agent: [Creates comprehensive ADR]
-
-### Step 2.6: Milestone Planning
-
-Define your project milestones using the template:
-
-```
-Ask Claude to create a milestone definition using the template at
-.claude/docs/templates/milestone-definition.md
-```
-
-Typical indie milestones:
-1. **Vertical Slice** -- One level, fully playable, representative quality
-2. **Alpha** -- All core systems functional, placeholder art OK
-3. **Beta** -- Content complete, all features in, polishing begins
-4. **Release Candidate** -- Bug fixes only, ready for launch
-5. **Gold** -- Ship it
-
-> **When all your design documents are reviewed and your architecture is
-> decided, you're ready to start building.**
+> **When all your feature specs are reviewed and your architecture is
+> decided, you're ready to validate your riskiest assumptions.**
 
 ---
 
@@ -494,106 +322,81 @@ Typical indie milestones:
 
 ### What Happens in This Phase
 
-Before committing to full production, you validate risky or uncertain
-mechanics with throwaway prototypes. This saves weeks of wasted production
-effort.
+Before committing to full production, validate risky or uncertain technical
+approaches with throwaway prototypes. This saves weeks of wasted effort.
 
 ### Step 3.1: Identify What Needs Prototyping
 
-Not everything needs a prototype. Prototype when:
-- A mechanic is novel and you're not sure it's fun
+Prototype when:
 - A technical approach is risky and you're not sure it's feasible
-- Two design options both seem viable and you need to feel the difference
+- A feature concept is novel and you're not sure the UX will work
+- Two implementation approaches both seem viable and you need to compare
 
 ### Step 3.2: Run the Prototype Skill
 
 ```
-/prototype "grappling hook movement with momentum"
+/prototype "real-time deployment risk scoring using git metadata"
 ```
 
 **What happens:** The skill collaborates with you to set up the prototype:
 
-Agent: "Let's prototype the grappling hook movement. First, let me clarify the
+Agent: "Let's prototype the deployment risk scoring. First, let me clarify the
        hypothesis we're testing:
 
-       - Are we testing if momentum-based grappling feels good?
-       - Or testing technical feasibility of the physics?
-       - Or comparing different control schemes?
+       - Are we testing if the scoring algorithm produces meaningful signal?
+       - Or testing the technical feasibility of processing git metadata in real-time?
+       - Or validating whether users find the output actionable?
 
-       What's the core question this prototype needs to answer?"
+       What's the core question this prototype must answer?"
 
-User: "Testing if momentum transfer feels satisfying and creates skill expression"
+User: "Testing if git metadata alone (file churn, commit frequency, author count)
+      produces meaningful risk signal without needing code analysis"
 
 Agent: "Got it. Here's my proposed setup:
 
-       **Hypothesis**: Grappling hook with momentum transfer will feel satisfying
-       and create emergent movement options through skill-based physics manipulation
+       **Hypothesis**: Git metadata features (churn rate, author count, time-since-last-change)
+       can predict deployment risk with >70% accuracy vs historical incidents
 
-       **Success Criteria**:
-       - Player can chain 3+ grapple points fluidly without losing momentum
-       - Momentum feels predictable enough to plan, expressive enough to surprise
-       - Players discover unintended movement tricks within 5 minutes
-
-       **Prototype Scope** (1-2 hours max):
-       - Basic grapple point attachment
-       - Momentum calculation and transfer
-       - Simple test level with various grapple configurations
-       - No art, UI, or sounds - pure mechanics
+       **Prototype Scope** (1-2 days max):
+       - Script to extract features from a sample git repo
+       - Simple scoring formula (weighted sum of features)
+       - Output: risk score per commit with comparison to known incidents
+       - No UI, no API — pure data analysis
 
        Does this match what you want to validate?"
 
-User: "Perfect, but add one more criteria: can we swing around corners"
+User: "Yes, use our own repo as the sample"
 
-Agent: "Updated success criteria to include corner swinging. Should I create
-       prototypes/grappling-hook/ and implement this?"
+Agent: "Updated to use this repo. Should I create prototypes/risk-scoring/ and implement?"
 
 User: "Yes"
 
-Agent: [Creates directory structure, README with hypothesis/criteria/status,
-       delegates to prototyper agent for minimal implementation]
+Agent: [Creates directory, README with hypothesis and criteria, implements minimal prototype]
 
 **Key rule:** The `prototype-code` rule (`.claude/rules/prototype-code.md`)
-intentionally relaxes coding standards for prototypes - hardcoded values OK,
-no tests required, but README with hypothesis and findings is mandatory.
+intentionally relaxes standards for prototypes — hardcoded values OK, no tests
+required, but README with hypothesis and findings is mandatory.
 
 ### Step 3.3: Evaluate the Prototype
 
-Play/test the prototype and answer:
-- Does the hypothesis hold? Is it fun / feasible / better?
+Run the prototype and answer:
+- Does the hypothesis hold? Is it feasible / accurate / useful?
 - What surprised you?
 - What would change for production?
 
-Update the prototype README with findings and a **verdict**: Ship It, Rework,
-or Kill It.
-
-### Step 3.4: Run a Playtest Report
-
-If you had others test the prototype:
-
-```
-/playtest-report
-```
-
-This generates a structured report template covering:
-- Tester demographics and context
-- Task completion rates
-- Confusion points and friction
-- Moments of delight
-- Quantitative ratings
-- Prioritized takeaways
+Update the prototype README with findings and a **verdict**: Proceed, Pivot, or Kill.
 
 > **When your prototypes have validated (or invalidated) your riskiest
-> assumptions, you're ready for production.**
+> assumptions, you're ready for production sprints.**
 
 ---
 
-## Phase 4: Production Sprint Workflow
+## Phase 4: Sprint Workflow
 
 ### What Happens in This Phase
 
-This is the core production loop. You work in sprints (typically 1-2 weeks),
-implementing features, fixing bugs, and tracking progress. This phase repeats
-until your game is content-complete.
+This is the core development loop. You work in sprints (typically 1-2 weeks),
+implementing features, fixing bugs, and tracking progress.
 
 ### Step 4.1: Create Your First Sprint
 
@@ -601,49 +404,46 @@ until your game is content-complete.
 /sprint-plan new
 ```
 
-**What happens:** The skill delegates to `producer` to collaborate on sprint planning:
+**What happens:** The skill delegates to `product-manager` to collaborate on planning:
 
-Agent: "Let's plan your sprint. First, what's your primary goal for this sprint?
-       (One sentence that defines success)"
+Agent: "Let's plan your sprint. What's your primary goal? (One sentence)"
 
-User: "Implement core combat system with basic attacks and health"
+User: "Implement user authentication with email/password and JWT"
 
-Agent: "How much time do you have available this sprint? (hours or days)"
+Agent: "How much time do you have available this sprint?"
 
-User: "20 hours over 2 weeks"
+User: "30 hours over 2 weeks"
 
-Agent: "Based on 'core combat system' I'm breaking this into tasks. Here's my
-       proposed structure:
+Agent: "Based on the user-auth spec in design/features/user-auth.md, here's my
+       proposed breakdown:
 
        **Must Have** (sprint fails without these):
-       - Damage calculation system (design/gdd/combat-system.md formulas)
-       - Health component with damage handling
-       - Basic attack input and execution
-       - Unit tests for damage calculation
+       - User registration endpoint with validation
+       - Password hashing (bcrypt)
+       - Login endpoint returning JWT
+       - JWT middleware for protected routes
+       - Integration tests for auth flows
 
        **Should Have** (important but can slip):
-       - Hit reactions and feedback VFX
-       - Death state handling
-       - Combat stat data files
+       - Refresh token mechanism
+       - Rate limiting on auth endpoints
+       - Password strength validation
 
        **Nice to Have** (if time permits):
-       - Attack combo system
-       - Damage numbers UI
+       - Email verification flow
+       - 'Remember me' functionality
 
        **Risks I see**:
-       - No combat design doc exists yet (blocker - need to create first)
-       - VFX requires technical-artist involvement
+       - Email delivery service not chosen yet (blocks email verification)
+       - JWT secret rotation strategy not decided (need ADR)
 
-       Does this task breakdown match your vision? Any tasks to add/remove/reprioritize?"
+       Does this breakdown match your vision?"
 
-User: "Move combo system to Should Have - it's important for feel"
+User: "Move email verification to Should Have — it's important for production"
 
 Agent: "Updated. Should I create production/sprints/sprint-01.md with this plan?"
 
 User: "Yes"
-
-Agent: [Creates sprint plan with goal, categorized tasks, 20hr capacity estimate,
-       risk register, and dependencies]
 
 ### Step 4.2: The Daily Work Loop
 
@@ -651,32 +451,30 @@ Each session follows this pattern:
 
 ```
 1. Start a Claude Code session
-   (session-start hook shows branch, sprint status, recent commits)
+   (session-start hook shows branch, recent commits)
 
 2. Pick a task from the sprint plan
-   ("I'm working on the combat damage calculation system")
+   ("I'm working on the JWT middleware")
 
 3. Claude identifies the right agent(s) to help
-   - game-designer if the design needs work
-   - gameplay-programmer for implementation
-   - systems-designer for formula details
+   - backend-engineer for API / server-side work
+   - frontend-engineer for client-side work
+   - lead-programmer for architecture questions
 
 4. Implement the feature (see Phase 5 for details)
 
 5. Write tests (verification-driven development)
 
 6. Commit your work
-   (validate-commit hook checks for design doc references,
-    valid JSON data, no hardcoded values)
 
-7. Repeat until the session's context is getting full (~65-70%)
+7. Repeat until session context is ~65-70% full
 
 8. /clear to start fresh, or compact to continue
 ```
 
-### Step 4.3: Sprint Tracking
+### Step 4.3: Sprint Tracking and Scope
 
-Check on sprint progress anytime:
+Check on sprint progress:
 
 ```
 /sprint-plan status
@@ -701,29 +499,18 @@ At the end of a sprint:
 /retrospective
 ```
 
-This analyzes:
-- What was planned vs. what was completed
-- Velocity (tasks/points completed)
-- What went well
-- What went poorly
-- Blockers encountered
-- Actionable improvements for next sprint
-
 Then plan the next sprint:
 
 ```
 /sprint-plan new
 ```
 
-The new sprint incorporates carry-over tasks, retrospective learnings, and
-updated priorities.
-
 ### Step 4.5: Milestone Reviews
 
 At milestone checkpoints:
 
 ```
-/milestone-review "alpha"
+/milestone-review "mvp"
 ```
 
 This produces a comprehensive report:
@@ -742,258 +529,170 @@ This produces a comprehensive report:
 This is where code gets written. The agent system ensures code quality through
 path-specific rules, automated hooks, and structured delegation.
 
-### Step 5.1: Single-System Implementation
+### Step 5.1: Backend Feature Implementation
 
-For a single gameplay system (e.g., "implement the damage calculation"):
+For a backend feature (e.g., "implement the user registration endpoint"):
 
 ```
-Ask the gameplay-programmer agent to implement the damage calculation
-system as specified in design/gdd/combat-system.md. The formulas are in
-section 4. Use the project's data-driven approach with config files in
-assets/data/.
+Ask the backend-engineer agent to implement the user registration endpoint
+as specified in design/features/user-auth.md. The endpoint should be at
+POST /api/v1/auth/register.
 ```
 
-**What happens:** The `gameplay-programmer` agent collaborates on implementation:
+**What happens:** The `backend-engineer` agent collaborates on implementation:
 
-Agent: "I've read design/gdd/combat-system.md. Before implementing, I need to
+Agent: "I've read design/features/user-auth.md. Before implementing, I need to
        clarify a few details:
 
-       Section 4 shows the damage formula: `base_damage * (1 + attack_stat * 0.1) * type_modifier`
+       The spec says 'validate email format and uniqueness' — questions:
+       - Should I return a generic 'invalid credentials' error for duplicate emails,
+         or a specific 'email already registered' error? (security vs UX tradeoff)
+       - What's the password minimum length? The spec says 'strong password'
+         but doesn't define it.
+       - Should I send a verification email immediately, or is that out of scope
+         for this sprint?
 
-       Questions:
-       - Should attack_stat be clamped to a max value?
-       - Where should type_modifiers live - per weapon or per damage type?
-       - Do you want damage rounding (floor/ceil/round)?
+       Also, what's our preferred HTTP error response format?"
 
-       Also, I don't see a design doc for the health component yet. Should I
-       create a minimal one or do you want to design that separately?"
-
-User: "Clamp attack_stat to 0-100. Type modifiers per damage type. Round down.
-      Create minimal health doc - just current/max HP and damage handling."
+User: "Generic error for duplicates (security). Minimum 8 chars, 1 uppercase, 1 number.
+      Skip email verification for now. Use { error: { code, message } } format."
 
 Agent: "Got it. Here's my implementation approach:
 
        **Files to create**:
-       - src/gameplay/combat/damage_calculator.gd (core formula logic)
-       - src/gameplay/combat/health_component.gd (HP tracking)
-       - assets/data/combat_damage.json (base damage values, type modifiers)
-       - design/gdd/health-system.md (minimal doc)
+       - src/api/auth/register.ts — handler logic
+       - src/api/auth/validators.ts — input validation
+       - src/core/users/user-repository.ts — database access
+       - tests/integration/auth/register.test.ts — integration tests
 
        **Architecture**:
-       - DamageCalculator as stateless utility (testable)
-       - HealthComponent as node component (signals for damage/death)
-       - All values from config file (gameplay-code rule)
+       - Handler validates input, calls repository, returns JWT
+       - Repository handles DB queries (testable via interface)
+       - All config values from environment variables
 
-       May I proceed with implementation?"
-
-User: "Yes"
-
-Agent: [Implements with automatic rule enforcement - data-driven values, delta time
-       independence, signal-based communication, dependency injection for testing]
-
-       "Implementation complete. Files created:
-       - src/gameplay/combat/damage_calculator.gd
-       - src/gameplay/combat/health_component.gd
-       - assets/data/combat_damage.json (validated JSON structure)
-       - design/gdd/health-system.md
-
-       Ready for testing. Should I draft unit tests?"
+       May I proceed?"
 
 User: "Yes"
 
-Agent: [Writes tests]
+Agent: [Implements with rule enforcement: no hardcoded values, input validation,
+       parameterized queries, proper error handling]
 
-### Step 5.2: Multi-System Feature (Team Orchestration)
+       "Implementation complete. Ready for testing. Should I write the integration tests?"
 
-For features that span multiple domains, use a team skill:
+### Step 5.2: Frontend Feature Implementation
+
+For a frontend feature:
 
 ```
-/team-combat "healing ability with HoT (heal-over-time) and cleanse"
+Ask the frontend-engineer agent to implement the login form component
+as specified in design/features/user-auth.md. Use React with TypeScript.
 ```
 
-**What happens:** The team skill orchestrates collaborative 6-phase development:
+**What happens:** The `frontend-engineer` collaborates on implementation:
 
-**Phase 1 - Design**:
-Agent (game-designer): "I'll design the healing ability. Questions:
-       - Should HoT stack or refresh duration?
-       - What debuffs should cleanse remove - all, or specific categories?
-       - Mana cost scaling with heal amount?"
+Agent: "I've read the spec. A few questions before building:
+
+       - Should this be a standalone page or a modal/drawer?
+       - Is there an existing form component to build on, or starting from scratch?
+       - What should happen after successful login? (redirect, refresh, etc.)
+       - Do we have a design system or should I use a component library?"
+
+User: "Standalone page at /login. No existing form component. Redirect to /dashboard.
+      Use Tailwind CSS."
+
+Agent: "Here's my approach:
+
+       **Files to create**:
+       - src/frontend/pages/Login.tsx — page component
+       - src/frontend/components/LoginForm.tsx — form component
+       - src/frontend/hooks/useAuth.ts — auth state hook
+
+       **Architecture**:
+       - Controlled form with React state
+       - API call via useAuth hook (keeps component clean)
+       - Loading, error, and success states handled explicitly
+       - Keyboard accessible (tab order, Enter to submit)
+
+       Approve this structure?"
+
+User: "Approved"
+
+Agent: [Implements with rule enforcement: accessible HTML, no hardcoded text,
+       loading/error states, no direct state mutation]
+
+### Step 5.3: UI Team Orchestration
+
+For features that span UX design and frontend implementation:
+
+```
+/team-ui "notifications settings page"
+```
+
+**What happens:** The team skill orchestrates a structured pipeline:
+
+**Phase 1 - UX Design** (ux-designer):
+Agent: "I'll design the notifications settings page. Questions:
+       - What notification types does the user control?
+       - Should settings be global or per-workspace?
+       - How granular should the controls be? (on/off vs frequency vs channels)"
 
 User: [Answers questions]
 
-Agent: [Creates design doc, shows draft] "Design ready. Approve to proceed to architecture?"
+Agent: [Creates UX spec with wireframes and interaction map]
+       "UX spec ready. Approve to proceed to implementation?"
 
-User: "Approved"
+**Phase 2 - Implementation** (frontend-engineer):
+Agent: "Implementing the settings page per the UX spec...
+       - All text through i18n system
+       - Keyboard accessible
+       - Loading and error states for each save action"
 
-**Phase 2 - Architecture**:
-Agent (gameplay-programmer): "Here's my proposed code structure:
-       - HealAbility class extending BaseAbility
-       - HoT as separate buff component (reusable)
-       - Cleanse as utility function (may be used elsewhere)
+**Phase 3 - Review**:
+Agent (ux-designer): "Verifying against wireframes and accessibility standards..."
+Agent (frontend-engineer): "Checking bundle impact and browser compatibility..."
 
-       This work or want changes?"
-
-User: "Approved"
-
-**Phase 3 - Parallel Implementation**:
-Agent (coordinator): "Starting parallel implementation:
-       - gameplay-programmer: HealAbility + HoT buff code
-       - ai-programmer: AI logic for when NPCs should use heal
-       - technical-artist: HoT VFX particle spec
-       - sound-designer: Heal cast and HoT tick SFX spec
-
-       I'll check back when all are complete."
-
-[Each specialist asks clarifying questions and shows their work before finalizing]
-
-**Phase 4 - Integration**:
-Agent (gameplay-programmer): "All components ready. Integrating now..."
-       [Shows integrated result] "Working in test scene. Ready for validation?"
-
-**Phase 5 - Validation**:
-Agent (qa-tester): "Testing against acceptance criteria from design doc..."
-       [Reports results] "2 edge cases found: [details]. Should we fix or defer?"
-
-User: "Fix the critical one, defer the other"
-
-**Phase 6 - Report**:
-Agent (coordinator): "Feature complete. Status:
-       ✓ Design, architecture, implementation, integration done
-       ✓ Critical bugs fixed
-       - 1 minor edge case deferred to backlog
-       Ready to merge."
-
-Other team skills work similarly:
-- `/team-narrative` -- Story content from structure to written dialogue
-- `/team-ui` -- UI feature from wireframe to polished implementation
-- `/team-level` -- Level from layout to fully dressed with encounters
-- `/team-audio` -- Audio from direction to implemented events
-
-### Step 5.3: AI Systems
-
-For NPC behavior, pathfinding, or decision-making:
-
-```
-Ask the ai-programmer agent to implement a patrol/investigate/chase
-behavior tree for enemy NPCs as specified in design/gdd/enemy-ai.md.
-```
-
-**What happens:** The `ai-programmer` agent asks clarifying questions before implementing:
-
-Agent: "I've read design/gdd/enemy-ai.md. Before building the behavior tree, I need
-       to clarify some behaviors:
-
-       - During patrol, should NPCs stop at waypoints or continuous loop?
-       - For investigate state: how long should they search before returning to patrol?
-       - Chase transition: should they chase immediately on sight or require 'confirmation time'?
-       - What happens if player breaks line-of-sight during chase?
-
-       Also, I see performance budget is 2ms/frame for all AI. How many NPCs will
-       be active simultaneously (worst case)?"
-
-User: "Stop at waypoints for 2 seconds. Search for 8 seconds. Immediate chase on sight.
-      Break LOS = return to last known position, search there, then investigate.
-      Max 15 NPCs active."
-
-Agent: "Got it. That gives me ~0.13ms per NPC. I'll use a hierarchical behavior tree
-       with shared pathfinding queries to stay under budget.
-
-       My approach:
-       - Root selector: Chase > Investigate > Patrol
-       - All timing/ranges from assets/data/enemy_ai.json (data-driven per ai-code rule)
-       - Debug visualization showing current state + detection radius
-       - Telegraph attacks with 0.5s windup (visible to player)
-
-       Approve this approach?"
-
-User: "Yes"
-
-Agent: [Implements with rule enforcement: 2ms budget, data-driven params, debug viz,
-       telegraphed intentions]
-
-       "Implementation complete. Tested with 20 NPCs - running at 1.8ms/frame.
-       Debug visualization shows state colors (green=patrol, yellow=investigate,
-       red=chase). Ready for review?"
-
-The `ai-code` rule automatically enforces performance budgets, data-driven parameters,
-debug visualization, and player-fair behavior.
-
-### Step 5.4: Engine-Specific Work
-
-When you need engine-specific expertise:
-
-```
-# For Godot:
-Ask the godot-specialist agent to review our scene tree architecture
-and suggest improvements for performance and maintainability.
-
-# For a specific subsystem:
-Ask the godot-gdscript-specialist to refactor our signal architecture
-to reduce coupling between the combat and UI systems.
-```
-
-Engine specialists know:
-- Engine-specific patterns and anti-patterns
-- Performance optimization techniques for that engine
-- Proper use of engine subsystems (Godot signals, Unity Addressables, UE GAS)
-- When to use native extensions vs scripting
-
-### Step 5.5: Architecture Decision Records
+### Step 5.4: Architecture Decision Records
 
 When you face a significant technical choice during implementation:
 
 ```
-/architecture-decision "Event Bus vs Direct Signals for System Communication"
+/architecture-decision "Database connection pooling strategy"
 ```
 
-This documents the decision so future-you (or future contributors) understand
-*why* things were built this way.
+This documents the decision so future contributors understand why things
+were built this way.
 
-### Step 5.6: Code Review
+### Step 5.5: Code Review
 
 After implementing a feature:
 
 ```
-/code-review src/gameplay/combat/damage_calculator.gd
+/code-review src/api/auth/register.ts
 ```
 
-**What happens:** The skill performs collaborative architectural review:
+**What happens:**
 
-Agent: "Reviewing src/gameplay/combat/damage_calculator.gd...
+Agent: "Reviewing src/api/auth/register.ts...
 
-       **Architectural Compliance**:
-       ✓ Matches ADR-003 (stateless utility pattern)
-       ✓ Data-driven values (gameplay-code rule)
-       ✗ Issue: Direct reference to HealthComponent - breaks dependency injection
+       **Architecture Compliance**:
+       ✓ Matches ADR-002 (repository pattern)
+       ✓ Input validation at API boundary
+       ✗ Issue: Direct database call in handler — breaks repository pattern
 
-       **SOLID Principles**:
-       ✓ Single Responsibility - only calculates damage
-       ✗ Dependency Inversion - tightly coupled to HealthComponent type
+       **Security**:
+       ✓ Parameterized queries (no SQL injection risk)
+       ✓ Password hashed before storage
+       ⚠ Warning: Error message may leak user existence — consider generic message
 
        **Testability**:
-       ✗ Hard to mock HealthComponent dependency
-
-       **Performance**:
-       ✓ No allocations in hot path
-       ⚠ Warning: Type lookup in dictionary every call - consider caching
+       ✗ Handler directly imports UserRepository — hard to mock in tests
 
        **Recommendations**:
-       1. HIGH: Add interface for HealthComponent to enable mocking
-       2. MEDIUM: Cache type modifier lookups
-       3. LOW: Add null checks for edge cases
+       1. HIGH: Inject repository via parameter to enable mocking
+       2. HIGH: Make error message generic for duplicate email
+       3. LOW: Add JSDoc to exported function
 
-       Should I show you how to fix issue #1 (dependency injection)?"
-
-User: "Yes, show me"
-
-Agent: [Shows refactored code with interface]
-
-       "This change lets you pass any object with take_damage(), making it testable.
-       Approve this refactor?"
-
-User: "Approved"
-
-Agent: [Applies changes] "Code review complete. All high-priority issues resolved."
+       Should I show you how to fix issue #1?"
 
 ---
 
@@ -1001,163 +700,88 @@ Agent: [Applies changes] "Code review complete. All high-priority issues resolve
 
 ### What Happens in This Phase
 
-Testing runs throughout production, not just at the end. The system supports
-test-driven development with automated enforcement.
+Testing runs throughout development. The system supports verification-driven
+development with automated enforcement.
 
-### Step 6.1: Write Tests First (Verification-Driven Development)
-
-The project enforces **verification-driven development**: write tests before
-or alongside implementation, not after.
+### Step 6.1: Write Tests Alongside Implementation
 
 The `test-standards` rule (`.claude/rules/test-standards.md`) enforces:
-- Test naming: `test_[system]_[scenario]_[expected_result]`
+- Test naming: `test_[module]_[scenario]_[expected_result]`
 - Structure: Arrange / Act / Assert
-- No external state dependencies
+- No external state dependencies (mock external services)
 - Tests clean up after themselves
-- Each test file mirrors the source file it tests
 
 ```
-Ask the qa-tester agent to write test cases for the damage calculation
-system based on the acceptance criteria in design/gdd/combat-system.md.
+Ask the qa-tester agent to write test cases for the user registration
+endpoint based on the acceptance criteria in design/features/user-auth.md.
 ```
 
-**What happens:** The `qa-tester` agent collaborates on test case creation:
+**What happens:** The `qa-tester` agent collaborates on test creation:
 
-Agent: "I've read the acceptance criteria from design/gdd/combat-system.md. Before
-       writing tests, let me confirm the test scope:
-
-       From the acceptance criteria, I see:
-       - Base damage formula must produce expected values
-       - Type modifiers apply correctly
-       - Edge case: attack_stat clamped at 0-100
-       - Edge case: negative damage becomes 0
+Agent: "From the acceptance criteria, I see:
+       - Registration with valid data returns 201 and JWT
+       - Duplicate email returns 400 with generic error
+       - Invalid password format returns 400 with validation errors
+       - Missing required fields return 400
 
        Questions:
-       - Should I include integration tests with HealthComponent or just unit tests?
-       - Do you want performance tests (e.g., 1000 calculations < Xms)?
-       - Any specific edge cases beyond those in the doc?"
+       - Should I include integration tests (hit real DB) or just unit tests?
+       - Do you want load tests? (e.g., 100 concurrent registrations)
+       - Any specific edge cases beyond the spec?"
 
-User: "Unit tests only for now. Add performance test - target 10,000 calcs < 1ms.
-      Also test what happens with invalid damage types."
+User: "Both unit and integration tests. Add a test for SQL injection attempt.
+      Skip load tests for now."
 
-Agent: "Got it. Here's my test plan:
-
-       **Unit Tests**:
-       - test_damage_basic_calculation (base formula, known values)
-       - test_damage_type_modifiers (each modifier from config)
-       - test_damage_attack_stat_clamping (below 0, above 100)
-       - test_damage_negative_becomes_zero
-       - test_damage_invalid_type (undefined type in config)
-       - test_damage_rounding (verify floor behavior)
-
-       **Performance Test**:
-       - test_damage_performance_10k_calculations
-
-       Approve this test suite?"
-
-User: "Yes"
-
-Agent: [Writes tests following test-standards rule: proper naming, Arrange/Act/Assert
-       structure, no external dependencies, cleanup]
-
-       "Test suite complete. All 7 tests written. Ready to run?"
+Agent: [Writes tests following test-standards: proper naming, AAA structure,
+       database cleanup after each integration test]
 
 ### Step 6.2: Bug Reporting
 
-When you find a bug:
-
 ```
-/bug-report "Healing spell applies damage instead of healing when
-target has a shield buff active"
+/bug-report "Login returns 500 when email contains special characters"
 ```
 
 This creates a structured bug report with:
-- Severity (Critical / Major / Minor / Cosmetic)
-- Priority (P0-P4)
+- Severity (Critical / Major / Minor)
 - Steps to reproduce
 - Expected vs actual behavior
-- System/component affected
-- Related design doc
+- Component affected
+- Related feature spec
 
-### Step 6.3: Test Planning
-
-For milestone validation:
+### Step 6.3: Test Planning for Milestones
 
 ```
-Ask the qa-lead agent to create a test plan for the Alpha milestone,
-covering combat, progression, and UI systems.
+Ask the qa-lead agent to create a test plan for the MVP milestone,
+covering authentication, dashboard, and API key management.
 ```
 
-**What happens:** The `qa-lead` agent collaborates on comprehensive test planning:
+**What happens:** The `qa-lead` collaborates on comprehensive test planning:
 
-Agent: "I'll create a test plan for the Alpha milestone. First, let me understand
-       the scope:
-
-       From the milestone definition, I see these systems are in scope:
-       - Combat system
-       - Progression system
-       - UI systems
+Agent: "I'll create a test plan for MVP. From the milestone definition:
+       - Authentication system
+       - Dashboard
+       - API key management
 
        Questions:
-       - What platforms are we testing? (Windows, Linux, Mac, mobile?)
-       - What's our target performance? (60fps? 30fps?)
-       - Any known risky areas that need extra test coverage?
-       - Timeline - when does testing need to complete?"
+       - What browsers/devices are in scope?
+       - What's our performance target (API p95, page load)?
+       - Any known risky areas that need extra coverage?
+       - Timeline for testing completion?"
 
-User: "Windows and Linux. Target 60fps. Combat AI is risky - lots of edge cases.
-      Testing deadline is end of next week."
+User: "Chrome/Firefox/Safari. API p95 < 200ms. Auth and API key management are risky.
+      Testing must complete by end of next week."
 
-Agent: "Got it. Here's my proposed test plan structure:
-
-       **Functional Tests** (3 days):
-       - Combat: Damage calculation, status effects, death states, AI behavior
-       - Progression: XP gain, level-up, skill unlocks, stat increases
-       - UI: Menus, HUD, inventory, settings
-
-       **Edge Case Tests** (1 day):
-       - Combat AI: Line-of-sight breaks, pathfinding failures, stuck states
-       - Boundary conditions: Max level, inventory full, negative damage
-
-       **Regression Suite** (1 day):
-       - Re-run all previous milestone tests
-
-       **Performance Benchmarks** (1 day):
-       - 60fps with 15 enemies, complex VFX
-       - Memory under 2GB
-       - Load times under 5s
-
-       **Platform Tests** (1 day):
-       - Windows 10/11
-       - Ubuntu 22.04 LTS
-
-       This fits the timeline. Approve or adjust?"
-
-User: "Approved"
-
-Agent: [Creates detailed test plan using test-plan.md template]
-
-### Step 6.4: Balance Testing
-
-After implementing economy or progression systems:
-
-```
-/balance-check assets/data/combat_damage.json
-```
-
-This analyzes your balance data for:
-- Statistical outliers
-- Broken progression curves
-- Degenerate strategies (one option dominates all others)
-- Economy imbalances (inflation, deflation, exploits)
+Agent: [Creates detailed test plan with functional, edge case, regression,
+       performance, and security sections]
 
 ---
 
-## Phase 7: Polish & Optimization
+## Phase 7: Polish & Hardening
 
 ### What Happens in This Phase
 
-Your game is feature-complete. Now you make it *good*. This phase focuses on
-performance, visual polish, audio, and feel.
+Your product is feature-complete. Now you make it production-ready: performance,
+security hardening, and edge case coverage.
 
 ### Step 7.1: Performance Profiling
 
@@ -1165,224 +789,69 @@ performance, visual polish, audio, and feel.
 /perf-profile
 ```
 
-**What happens:** The skill guides you through structured performance profiling:
+**What happens:**
 
-Agent: "Starting performance profiling. First, let's establish your targets:
-       - Target FPS?
-       - Target memory limit?
-       - Target platform(s)?"
+Agent: "Starting performance profiling. Let's establish targets:
+       - API response time target (p95)?
+       - Page load target?
+       - Throughput target (requests/second)?"
 
-User: "60fps on mid-range PC. Under 2GB RAM. Windows/Linux."
+User: "API p95 < 200ms. LCP < 2.5s. Handle 100 req/s."
 
 Agent: "Running profiler on current build...
 
        **Current Performance**:
-       - Average FPS: 48
-       - Frame time: 20.8ms (target: 16.6ms for 60fps)
-       - Memory: 2.4GB (400MB over target)
+       - API p95: 480ms (target: 200ms)
+       - LCP: 3.8s (target: 2.5s)
+       - Throughput: 40 req/s (target: 100 req/s)
 
-       **Bottlenecks Identified** (ranked by impact):
-       1. Combat AI: 8.2ms/frame (49% of frame time) - HIGH PRIORITY
-       2. Particle VFX: 3.1ms/frame (18% of frame time) - MEDIUM
-       3. UI rendering: 2.8ms/frame (17% of frame time) - MEDIUM
-       4. Physics: 1.9ms/frame (11% of frame time) - LOW
-
-       **Memory Issues**:
-       1. Texture atlas not compressed: +280MB - HIGH PRIORITY
-       2. Audio buffers not streaming: +120MB - HIGH PRIORITY
+       **Bottlenecks Identified**:
+       1. Database queries: N+1 on dashboard endpoint — 3 queries per item
+       2. No response caching on static data endpoints
+       3. Frontend bundle: 2.1MB uncompressed, no code splitting
 
        **Recommendations**:
-       1. Combat AI: Implement hierarchical behavior tree, reduce per-frame checks
-       2. Textures: Enable GPU compression
-       3. Audio: Stream longer sounds instead of loading all
+       1. Fix N+1 with JOIN or dataloader
+       2. Add Redis cache for user session data (TTL: 5min)
+       3. Implement route-based code splitting
 
-       Should I generate detailed optimization tasks for the top 3 issues?"
+       Should I generate detailed optimization tasks?"
 
-User: "Yes"
+**For deeper analysis, use the `performance-analyst` agent directly.**
 
-Agent: [Generates actionable optimization tasks with code locations and expected gains]
+### Step 7.2: Team Polish
 
-**For deeper analysis, use the `performance-analyst` agent:**
-
-```
-Ask the performance-analyst agent to analyze our combat system for
-frame time spikes. We're seeing hitches when 10+ enemies are active.
-```
-
-Agent: "I'll analyze the combat system performance. Let me profile with varying
-       enemy counts...
-
-       **Analysis Results**:
-       - 5 enemies: 58fps stable
-       - 10 enemies: 52fps with occasional drops to 45fps
-       - 15 enemies: 38fps with spikes down to 22fps
-
-       **Root Cause**: Behavior tree re-evaluates entire tree every frame for
-       every NPC. With 15 NPCs, that's 15 full tree traversals = 8.2ms.
-
-       **Solution Options**:
-       1. Stagger updates: Only update 5 NPCs per frame (rotation)
-       2. Cache tree results: Re-evaluate only on state change
-       3. Simplify tree: Reduce node count from 12 to 6
-
-       I recommend Option 2 + 3: Cache results AND simplify the tree.
-       Expected gain: 8.2ms -> 1.5ms (6.7ms saved = +40fps)
-
-       Should I show you the refactored behavior tree?"
-
-User: "Yes"
-
-Agent: [Shows optimized implementation]
-
-### Step 7.2: Visual Polish
-
-Use the team polish skill for comprehensive polishing:
+Use the team polish skill for comprehensive hardening:
 
 ```
-/team-polish "combat system"
+/team-polish "authentication system"
 ```
 
-**What happens:** The team polish skill coordinates collaborative polish passes:
-
-Agent (coordinator): "Starting polish pass for combat system. Let me assess
-       current state and identify polish priorities...
-
-       **Current State Analysis**:
-       - Performance: 48fps (needs optimization)
-       - Visual feedback: Hit effects present but underwhelming
-       - Audio: SFX in place but mixing needs work
-       - Feel: Input response good, but impacts lack weight
-
-       I'll coordinate 4 specialists in parallel. First, let me get your polish
-       priorities - rank these:
-       - Performance (hitting 60fps)
-       - Visual impact (VFX, shaders, feedback)
-       - Audio polish (mixing, spatial, punch)
-       - Feel/juice (screen shake, hitstop, particles)"
-
-User: "Performance #1, then visual impact, then feel, then audio"
+**What happens:** The skill coordinates three specialists in parallel:
 
 **Phase 1 - Performance** (performance-analyst):
-Agent: "Running combat performance optimization..."
-       [Implements optimizations from previous profiling]
-       "Now at 62fps stable. Performance target met."
+Agent: "Profiling auth system...
+       Login endpoint p95: 380ms (above 200ms target)
+       Root cause: bcrypt cost factor 14 — try cost factor 12
+       Expected gain: 380ms → 180ms"
 
-**Phase 2 - Visual Impact** (technical-artist):
-Agent: "Analyzing visual feedback. I see hit VFX but they're generic. Questions:
-       - Should different damage types have distinct visual feedback?
-       - Do you want critical hits to be visually distinct?
-       - Screen shake on hits - subtle or pronounced?"
+**Phase 2 - Security** (security-engineer):
+Agent: "Security review of auth system:
+       ✓ Passwords hashed with bcrypt
+       ✓ JWT signed with RS256
+       ⚠ No rate limiting on login endpoint — brute force risk
+       ⚠ JWT expiry is 7 days — recommend 1 hour + refresh token
+       ✗ Refresh tokens not invalidated on logout — token revocation needed"
 
-User: "Distinct per damage type. Crits should pop. Subtle screen shake."
+**Phase 3 - Hardening** (qa-tester):
+Agent: "Edge case and stress testing...
+       - Concurrent login attempts: handles correctly
+       - Invalid JWT formats: all rejected correctly
+       - Session after password change: ✗ old JWTs still valid — needs fix"
 
-Agent: [Creates polished VFX specifications and shader improvements]
-       "VFX polish complete. Want to see a comparison video?"
+**Sign-off**: All specialists report → coordinator generates readiness report.
 
-**Phase 3 - Feel** (technical-artist + gameplay-programmer):
-Agent: "Adding hitstop (frame freeze) on impacts, particle bursts on crits,
-       subtle camera shake. Testing feel..."
-       "Hitstop feels good at 100ms for normal hits, 200ms for crits. Approve?"
-
-User: "Approved"
-
-**Phase 4 - Validation** (qa-tester):
-Agent: "Running regression tests on all combat polish changes..."
-       "All tests pass. No bugs introduced."
-
-Agent (coordinator): "Polish pass complete:
-       ✓ Performance: 48fps -> 62fps
-       ✓ Visual: Enhanced VFX, type-specific effects, crit feedback
-       ✓ Feel: Hitstop, particles, camera shake
-       ✓ Tests: All passing
-       Ready to merge."
-
-### Step 7.3: Audio Implementation
-
-```
-/team-audio "combat audio"
-```
-
-**What happens:** The team audio skill coordinates the full collaborative audio pipeline:
-
-**Phase 1 - Audio Direction** (audio-director):
-Agent: "Let's define the audio direction for combat. What's the emotional goal?
-       - Brutal and visceral?
-       - Tactical and precise?
-       - Magical and fantastical?
-       - Fast and arcade-like?"
-
-User: "Tactical and precise with some weight to impacts"
-
-Agent: "Got it. Here's my audio direction for combat:
-
-       **Audio Pillars**:
-       - Clarity: Every action has distinct, recognizable sound
-       - Spatial awareness: Enemy positions clear from audio alone
-       - Feedback: Successful actions feel satisfying
-       - Atmosphere: Tension maintained without fatigue
-
-       **Priorities**:
-       1. Weapon sounds must be punchy but not fatiguing
-       2. Footsteps critical for spatial awareness
-       3. Enemy attack telegraphs via audio cues
-       4. Hit confirmation with satisfying impact sounds
-
-       Approve this direction?"
-
-User: "Approved"
-
-**Phase 2 - SFX Specification** (sound-designer):
-Agent: "Based on the audio direction, here's my SFX event list:
-
-       **Player Actions**:
-       - weapon_swing_light, weapon_swing_heavy (distinct whoosh)
-       - footstep_walk, footstep_run (material-aware)
-       - ability_cast_start, ability_cast_release
-
-       **Impacts**:
-       - hit_flesh_light, hit_flesh_heavy (with pitch variation)
-       - hit_armor_deflect (metallic ping)
-       - critical_hit (special layered impact)
-
-       **Enemy Audio**:
-       - enemy_attack_windup (0.5s telegraph)
-       - enemy_footstep (louder than player for spatial awareness)
-
-       Each sound has variation pool (3-5 variants) to avoid repetition.
-       Missing anything critical?"
-
-User: "Add dodge/roll sound"
-
-Agent: "Added dodge_roll event. Complete SFX spec ready."
-
-**Phase 3 - Audio Implementation** (technical-artist):
-Agent: "Implementing audio system with:
-       - Event-based triggers (no hardcoded audio calls)
-       - 3D spatial audio with distance attenuation
-       - Priority system (critical sounds never cut off)
-       - Dynamic mixing (combat music layer + SFX balance)
-
-       Questions:
-       - Max simultaneous sounds limit? (recommend 32)
-       - Distance attenuation curve - linear or logarithmic?"
-
-User: "32 sounds max. Logarithmic attenuation."
-
-Agent: [Implements audio middleware integration]
-
-**Phase 4 - Integration** (gameplay-programmer):
-Agent: "Wiring audio events to gameplay code...
-       - Weapon swings: Connected to animation events
-       - Footsteps: Tied to movement speed and surface type
-       - Impacts: Hooked to damage events
-       - Enemy telegraphs: 0.5s before attack execution
-
-       Ready for audio playtest."
-
-Agent (coordinator): "Combat audio pipeline complete. Test in-game and provide feedback
-       on balance, clarity, and feel."
-
-### Step 7.4: Technical Debt
+### Step 7.3: Technical Debt
 
 Before release, assess your tech debt:
 
@@ -1413,28 +882,27 @@ before release vs. what to defer.
 This scans for:
 - Hardcoded strings that should be externalized
 - String concatenation that breaks translation
-- Text that doesn't account for expansion (German text is ~30% longer)
+- Text that doesn't account for expansion
 - Missing locale files
 
 ### Step 8.2: Accessibility Review
 
 ```
-Ask the accessibility-specialist agent to audit our UI system for
-WCAG compliance, colorblind support, and input remapping.
+Ask the ux-designer agent to audit our UI for WCAG 2.1 AA compliance,
+keyboard navigation, and screen reader compatibility.
 ```
 
 The `ui-code` rule already enforces some accessibility:
-- Localization-ready strings (no hardcoded text)
-- Keyboard and gamepad input support
-- Text scaling support
-- Colorblind-friendly design
+- i18n-ready strings (no hardcoded text)
+- Keyboard accessible elements
+- Loading and error states
 
-The `accessibility-specialist` goes deeper:
-- Screen reader compatibility
-- Key remapping completeness
-- Subtitle and caption support
-- Motion sensitivity options
-- Difficulty/assist options
+The `ux-designer` goes deeper:
+- Focus management and keyboard traps
+- ARIA labeling completeness
+- Color contrast ratios
+- Motion preferences (`prefers-reduced-motion`)
+- Screen reader announcements for dynamic content
 
 ---
 
@@ -1442,7 +910,7 @@ The `accessibility-specialist` goes deeper:
 
 ### What Happens in This Phase
 
-Your game is polished, tested, and ready. Now you ship it.
+Your product is polished, tested, and ready. Now you ship it.
 
 ### Step 9.1: Release Checklist
 
@@ -1451,12 +919,11 @@ Your game is polished, tested, and ready. Now you ship it.
 ```
 
 This generates a comprehensive pre-release checklist covering:
-- Build verification (all platforms compile and run)
-- Certification requirements (platform-specific)
-- Store metadata (descriptions, screenshots, trailers)
-- Legal compliance (EULA, privacy policy, ratings)
-- Save game compatibility
-- Analytics and telemetry verification
+- Build verification (clean build, no warnings)
+- Quality gates (zero critical bugs, tests passing)
+- Security (no exposed secrets, TLS configured, auth tested)
+- Content complete (no placeholders, all text proofread)
+- Deployment readiness (staging smoke test, rollback plan)
 
 ### Step 9.2: Launch Readiness (Full Validation)
 
@@ -1464,35 +931,31 @@ This generates a comprehensive pre-release checklist covering:
 /launch-checklist
 ```
 
-This is the nuclear option -- a complete cross-department validation:
+A complete cross-department validation:
 
-| Department | What's Checked |
-|-----------|---------------|
-| **Engineering** | Build stability, crash rates, memory leaks, load times |
-| **Design** | Feature completeness, tutorial flow, difficulty curve |
-| **Art** | Asset quality, missing textures, LOD levels |
-| **Audio** | Missing sounds, mixing levels, spatial audio |
-| **QA** | Open bug count by severity, regression suite pass rate |
-| **Narrative** | Dialogue completeness, lore consistency, typos |
-| **Localization** | All strings translated, no truncation, locale testing |
-| **Accessibility** | Compliance checklist, assistive feature testing |
-| **Store** | Metadata complete, screenshots approved, pricing set |
-| **Marketing** | Press kit ready, launch trailer, social media scheduled |
-| **Community** | Patch notes draft, FAQ prepared, support channels ready |
-| **Infrastructure** | Servers scaled, CDN configured, monitoring active |
-| **Legal** | EULA finalized, privacy policy, COPPA/GDPR compliance |
+| Area | What's Checked |
+|------|---------------|
+| **Code** | Build stability, test suite, code quality |
+| **Infrastructure** | Deployment, scaling, backups, monitoring |
+| **Security** | Secrets management, TLS, auth, GDPR compliance |
+| **Performance** | API p95, page load, throughput under load |
+| **Accessibility** | WCAG compliance, keyboard nav, screen readers |
+| **Localization** | All strings externalized, translations verified |
+| **Legal** | Terms of service, privacy policy, license attributions |
+| **Community** | Documentation, FAQ, support channels ready |
+| **Operations** | On-call schedule, incident playbook, rollback plan |
 
 Each item gets a **Go / No-Go** status. All must be Go to ship.
 
-### Step 9.3: Generate Player-Facing Content
+### Step 9.3: Generate Release Communications
 
 ```
 /patch-notes v1.0.0
 ```
 
-Generates player-friendly patch notes from git history and internal data.
-Translates developer language ("refactored state machine") into player
-language ("improved enemy behavior responsiveness").
+Generates user-friendly release notes from git history and sprint data.
+Translates developer language ("refactored auth middleware") into user
+language ("improved login reliability").
 
 ```
 /changelog v1.0.0
@@ -1503,106 +966,65 @@ Generates an internal changelog (more technical, for the team).
 ### Step 9.4: Coordinate the Release
 
 ```
-/team-release
+/team-release v1.0.0
 ```
 
-**What happens:** The team release skill coordinates all departments for launch:
+**What happens:** The team release skill coordinates all roles for launch:
 
-**Phase 1 - Pre-Release Validation** (release-manager):
-Agent: "Starting release coordination for v1.0.0. First, status check across
-       all departments...
+**Phase 1 - Release Planning** (product-manager):
+Agent: "Starting release coordination for v1.0.0. Reviewing milestone status...
 
-       Reviewing launch checklist results:
-       ✓ Engineering: All green
-       ✓ QA: 2 minor bugs open (non-blocking)
-       ✓ Art/Audio: Complete
-       ✓ Localization: Complete
-       ⚠ Store: Screenshots pending approval
-       ✗ Marketing: Launch trailer not finalized
+       ✓ All MVP features complete
+       ✓ QA sign-off received
+       ⚠ Infrastructure: load test pending
+       ✗ Legal: privacy policy not yet published
 
-       Two blockers identified. Timeline impact?"
+       Two items need resolution before go/no-go."
 
-User: "Screenshots approved this morning. Trailer done by end of day."
+User: "Load test running now. Privacy policy publishes today."
 
-Agent: "Got it. Updated timeline: Release tomorrow pending trailer completion.
-       Should I proceed with build preparation?"
+**Phase 2 - Release Candidate** (release-manager):
+Agent: "Cutting release branch v1.0.0...
+       - Version bumped in all relevant files
+       - Release checklist generated
+       - Branch frozen for feature changes"
 
-User: "Yes"
+**Phase 3 - Quality Gate** (qa-lead + devops-engineer in parallel):
+Agent (qa-lead): "Running full regression suite on release build...
+       All critical and high tests: ✓ Pass. QA signs off."
+Agent (devops-engineer): "Build artifacts generated. Staging smoke test: ✓ Pass.
+       Deployment pipeline ready."
 
-**Phase 2 - Build Management** (release-manager):
-Agent: "Creating release build v1.0.0...
-       - Windows build: ✓ Complete, tested, 2.1GB
-       - Linux build: ✓ Complete, tested, 2.3GB
-       - Checksums generated
-       - Version manifest created
-       - Update server configured
-
-       All builds ready for deployment."
-
-**Phase 3 - Final QA Sign-Off** (qa-lead):
-Agent: "Running final regression suite on release builds...
-       - All critical tests: ✓ Pass
-       - All high-priority tests: ✓ Pass
-       - Platform-specific tests: ✓ Pass
-
-       QA signs off for release. No blocking issues."
-
-**Phase 4 - Deployment Preparation** (devops-engineer):
-Agent: "CI/CD pipeline ready. Deployment plan:
-       1. Upload builds to CDN (12:00 UTC)
-       2. Update store listings (12:30 UTC)
-       3. Enable download access (13:00 UTC - launch time)
-       4. Monitor server load and error rates
-
-       Rollback plan ready if critical issues detected.
-       Approve deployment schedule?"
-
-User: "Approved"
-
-**Phase 5 - Go/No-Go Decision** (producer):
-Agent: "Final go/no-go check:
-       ✓ All builds validated
-       ✓ QA sign-off complete
-       ✓ Store metadata approved
-       ✓ Launch trailer complete (confirmed)
-       ✓ Marketing materials ready
-       ✓ Support team briefed
-       ✓ Deployment plan approved
-
-       All systems GO. Recommend proceeding with launch at 13:00 UTC tomorrow.
-       Final approval?"
-
-User: "GO for launch"
-
-Agent: "Launch approved. Deployment begins 12:00 UTC tomorrow. I'll monitor and
-       report status updates."
+**Phase 4 - Go/No-Go** (product-manager):
+Agent: "All sign-offs received:
+       ✓ QA, Technical Director, Release Manager, DevOps
+       GO for launch."
 
 ### Step 9.5: Ship
-
-The `validate-push` hook will warn you when pushing to `main` or `develop`.
-This is intentional -- release pushes should be deliberate:
 
 ```
 git tag v1.0.0
 git push origin main --tags
 ```
 
+The deployment pipeline takes over from here.
+
 ---
 
-## Phase 10: Post-Launch & Live Ops
+## Phase 10: Post-Launch
 
 ### Step 10.1: Hotfix Workflow
 
 When a critical bug appears in production:
 
 ```
-/hotfix "Players losing save data when inventory exceeds 99 items"
+/hotfix "API returns 500 on accounts created before v0.9.0 due to missing field"
 ```
 
 This bypasses normal sprint processes with a full audit trail:
 1. Creates a hotfix branch
 2. Tracks approvals
-3. Implements the fix
+3. Implements the fix with the `lead-programmer`
 4. Ensures the fix is backported to the development branch
 5. Documents the incident
 
@@ -1618,35 +1040,17 @@ Ask Claude to create a post-mortem using the template at
 This covers:
 - What went well
 - What went poorly
-- What was surprising
-- Key metrics (sales, reviews, crash rates)
-- Lessons for the next project
+- Key metrics (signups, error rates, performance)
+- Lessons for the next milestone
 
-### Step 10.3: Live Operations (if applicable)
-
-For games with ongoing content:
+### Step 10.3: Retrospective
 
 ```
-Ask the live-ops-designer agent to design a seasonal content cadence
-with battle pass, weekly events, and monthly content drops. Target
-retention for the 30-60-90 day cohorts.
+/retrospective
 ```
 
-The `live-ops-designer` handles:
-- Season/event calendar
-- Battle pass design
-- Content cadence planning
-- Retention mechanics
-- Live economy tuning
-- Engagement analytics
-
-### Step 10.4: Community Management
-
-```
-Ask the community-manager agent to draft patch notes for v1.0.1,
-respond to the top 5 community complaints from the feedback channel,
-and prepare a "known issues" post.
-```
+Document what the team learned from the release and incorporate it into
+the next sprint plan.
 
 ---
 
@@ -1656,60 +1060,38 @@ and prepare a "known issues" post.
 
 | I need to... | Agent | Tier |
 |-------------|-------|------|
-| Come up with a game idea | `/brainstorm` skill | -- |
-| Design a game mechanic | `game-designer` | 2 |
-| Design specific formulas/numbers | `systems-designer` | 3 |
-| Design a game level | `level-designer` | 3 |
-| Design loot tables / economy | `economy-designer` | 3 |
-| Build world lore | `world-builder` | 3 |
-| Write dialogue | `writer` | 3 |
-| Plan the story | `narrative-director` | 2 |
-| Plan a sprint | `producer` | 1 |
-| Make a creative decision | `creative-director` | 1 |
-| Make a technical decision | `technical-director` | 1 |
-| Implement gameplay code | `gameplay-programmer` | 3 |
-| Implement core engine systems | `engine-programmer` | 3 |
-| Implement AI behavior | `ai-programmer` | 3 |
-| Implement multiplayer | `network-programmer` | 3 |
-| Implement UI | `ui-programmer` | 3 |
-| Build dev tools | `tools-programmer` | 3 |
+| Brainstorm a product idea | `/brainstorm` skill | — |
+| Make a product/scope decision | `product-manager` | 1 |
+| Make a technical architecture decision | `technical-director` | 1 |
 | Review code architecture | `lead-programmer` | 2 |
-| Create shaders / VFX | `technical-artist` | 3 |
-| Define visual style | `art-director` | 2 |
-| Define audio style | `audio-director` | 2 |
-| Design sound effects | `sound-designer` | 3 |
-| Design UX flows | `ux-designer` | 3 |
-| Write test cases | `qa-tester` | 3 |
-| Plan test strategy | `qa-lead` | 2 |
-| Profile performance | `performance-analyst` | 3 |
-| Set up CI/CD | `devops-engineer` | 3 |
-| Design analytics | `analytics-engineer` | 3 |
-| Check accessibility | `accessibility-specialist` | 3 |
-| Plan live operations | `live-ops-designer` | 3 |
+| Plan a test strategy | `qa-lead` | 2 |
 | Manage a release | `release-manager` | 2 |
-| Manage localization | `localization-lead` | 2 |
-| Prototype quickly | `prototyper` | 3 |
-| Audit security | `security-engineer` | 3 |
-| Communicate with players | `community-manager` | 3 |
-| Godot-specific help | `godot-specialist` | 3 |
-| Unity-specific help | `unity-specialist` | 3 |
-| Unreal-specific help | `unreal-specialist` | 3 |
+| Implement backend features | `backend-engineer` | 3 |
+| Implement frontend features | `frontend-engineer` | 3 |
+| Set up CI/CD or infrastructure | `devops-engineer` | 3 |
+| Audit for security vulnerabilities | `security-engineer` | 3 |
+| Design UX flows and wireframes | `ux-designer` | 3 |
+| Write test cases and bug reports | `qa-tester` | 3 |
+| Profile and optimize performance | `performance-analyst` | 3 |
+| Design API networking or protocols | `network-programmer` | 3 |
 
 ### Agent Hierarchy
 
 ```
-                    creative-director / technical-director / producer
-                                         |
-          ---------------------------------------------------------------
-          |            |           |           |          |        |
-    game-designer  lead-prog  art-dir  audio-dir  narr-dir  qa-lead  release-mgr
-          |            |           |           |          |        |
-     specialists  programmers  tech-art  snd-design  writer   qa-tester  devops
+                    technical-director / product-manager
+                                   |
+               ------------------------------------------------
+               |              |           |          |        |
+         lead-programmer   qa-lead   release-mgr  ux-designer  devops
+               |
+    -------------------------
+    |           |            |
+ backend    frontend    network-prog
+ engineer   engineer
 ```
 
-**Escalation rule:** If two agents disagree, go up. Design conflicts go to
-`creative-director`. Technical conflicts go to `technical-director`. Scope
-conflicts go to `producer`.
+**Escalation rule:** Scope/product conflicts go to `product-manager`.
+Technical conflicts go to `technical-director`.
 
 ---
 
@@ -1721,39 +1103,38 @@ conflicts go to `producer`.
 |-------|----------|
 | **Onboarding** | `/start` |
 | **Ideation** | `/brainstorm` |
-| **Design** | `/map-systems`, `/design-system`, `/design-review`, `/architecture-decision` |
+| **Design** | `/design-system`, `/design-review`, `/architecture-decision` |
 | **Sprint** | `/sprint-plan`, `/estimate`, `/scope-check`, `/retrospective` |
 | **Implementation** | `/code-review`, `/prototype`, `/tech-debt` |
-| **Testing** | `/balance-check`, `/playtest-report`, `/perf-profile` |
-| **Assets** | `/asset-audit`, `/localize` |
+| **Testing** | `/perf-profile`, `/bug-report` |
+| **Quality** | `/localize` |
 | **Release** | `/release-checklist`, `/launch-checklist`, `/changelog`, `/patch-notes`, `/hotfix` |
-| **Production** | `/milestone-review`, `/onboard` |
-| **Teams** | `/team-combat`, `/team-narrative`, `/team-ui`, `/team-release`, `/team-polish`, `/team-audio`, `/team-level` |
+| **Production** | `/milestone-review`, `/gate-check`, `/project-stage-detect`, `/onboard` |
+| **Teams** | `/team-ui`, `/team-release`, `/team-polish` |
 
 ---
 
 ## Appendix C: Common Workflows
 
-### Workflow 1: "I just started and have no game idea"
+### Workflow 1: "I just started and have no product idea"
 
 ```
 1. /start (asks where you are, routes you to the right workflow)
    — or /brainstorm if you prefer to jump straight to ideation
-2. Pick the best concept from the brainstorm output
-3. Create a game concept doc (templates/game-concept.md)
-4. Define game pillars (templates/game-pillars.md)
+2. Pick the best direction from the brainstorm output
+3. Create a product concept doc (design/product-concept.md)
+4. Define product pillars
 5. /design-review on your concept doc
-6. /map-systems to decompose concept into systems with dependencies and priorities
-7. /design-system to author per-system GDDs (guided, section-by-section)
+6. /design-system for each feature (guided, section-by-section)
 ```
 
 ### Workflow 2: "I have a design and want to start coding"
 
 ```
-1. /design-review on each GDD to make sure they're solid
+1. /design-review on each feature spec to make sure they're solid
 2. /architecture-decision for your first major tech choice
 3. /sprint-plan new to plan your first sprint
-4. Start implementing with gameplay-programmer / engine-programmer
+4. Start implementing with backend-engineer / frontend-engineer
 5. /code-review after each major feature
 6. Write tests alongside code
 7. Commit frequently (hooks validate automatically)
@@ -1762,17 +1143,13 @@ conflicts go to `producer`.
 ### Workflow 3: "I need to add a complex feature"
 
 ```
-1. Create/update the GDD for the feature in design/gdd/
+1. Create/update the feature spec in design/features/
 2. /design-review to validate the design
 3. /estimate to understand effort and risk
-4. Use the appropriate /team-* skill:
-   - /team-combat for combat features
-   - /team-narrative for story content
+4. Use the appropriate team skill:
    - /team-ui for UI features
-   - /team-level for new levels/areas
-   - /team-audio for audio work
+   - /team-polish for hardening existing features
 5. /code-review the implementation
-6. /balance-check if it affects game balance
 ```
 
 ### Workflow 4: "Something broke in production"
@@ -1793,7 +1170,7 @@ conflicts go to `producer`.
 2. /scope-check to see if scope has crept
 3. /tech-debt to assess debt before milestone
 4. /perf-profile to check performance targets
-5. /team-polish for final polish pass
+5. /team-polish for final hardening pass
 6. /release-checklist when ready to ship
 ```
 
@@ -1807,16 +1184,16 @@ conflicts go to `producer`.
 5. /sprint-plan status to check progress mid-sprint
 ```
 
-### Workflow 7: "Shipping the game"
+### Workflow 7: "Shipping the product"
 
 ```
 1. /milestone-review for final milestone
 2. /tech-debt to decide what's acceptable at launch
 3. /localize for final localization pass
-4. Accessibility audit via accessibility-specialist
+4. /team-polish for security and performance hardening
 5. /launch-checklist for full cross-department validation
 6. /team-release to coordinate the release
-7. /patch-notes and /changelog for player communications
+7. /patch-notes and /changelog for communications
 8. Ship!
 9. /hotfix if anything breaks post-launch
 10. Post-mortem after launch stabilizes
@@ -1827,36 +1204,34 @@ conflicts go to `producer`.
 ## Tips for Getting the Most Out of the System
 
 1. **Always start with design, then implement.** The agent system is built
-   around the assumption that a design document exists before code is written.
-   Agents reference GDDs constantly.
+   around the assumption that a feature spec exists before code is written.
+   Agents reference specs constantly.
 
-2. **Use team skills for cross-cutting features.** Don't try to manually
-   coordinate 4 agents yourself -- let `/team-combat`, `/team-narrative`,
-   etc. handle the orchestration.
+2. **Use team skills for cross-cutting features.** Don't manually coordinate
+   multiple agents — let `/team-ui`, `/team-polish`, `/team-release` handle
+   the orchestration.
 
 3. **Trust the rules system.** When a rule flags something in your code, fix
-   it. The rules encode hard-won game development wisdom (data-driven values,
-   delta time, accessibility, etc.).
+   it. The rules encode best practices (no hardcoded config, input validation,
+   accessibility, security).
 
 4. **Compact proactively.** At ~65-70% context usage, compact or `/clear`.
-   The pre-compact hook saves your progress. Don't wait until you're at the
-   limit.
+   Don't wait until you're at the limit.
 
-5. **Use the right tier of agent.** Don't ask `creative-director` to write a
-   shader. Don't ask `qa-tester` to make design decisions. The hierarchy
-   exists for a reason.
+5. **Use the right tier of agent.** Don't ask `technical-director` to write
+   a component. Don't ask `qa-tester` to make architecture decisions.
 
-6. **Run `/design-review` before handing designs to programmers.** This
-   catches incomplete specs early, saving rework.
+6. **Run `/design-review` before handing specs to engineers.** This catches
+   incomplete or ambiguous requirements early, saving rework.
 
 7. **Run `/code-review` after every major feature.** Catch architectural
    issues before they propagate.
 
-8. **Prototype risky mechanics first.** A day of prototyping can save a week
-   of production on a mechanic that doesn't work.
+8. **Prototype risky technical approaches first.** A day of prototyping can
+   save a week of production work on an approach that doesn't work.
 
 9. **Keep your sprint plans honest.** Use `/scope-check` regularly. Scope
-   creep is the #1 killer of indie games.
+   creep is the #1 killer of software projects.
 
 10. **Document decisions with ADRs.** Future-you will thank present-you for
     recording *why* things were built the way they were.

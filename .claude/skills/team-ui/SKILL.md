@@ -1,10 +1,10 @@
 ---
 name: team-ui
-description: "Orchestrate the UI team: coordinates ux-designer, ui-programmer, and art-director to design, implement, and polish a user interface feature from wireframe to final."
+description: "Orchestrate the UI team: coordinates ux-designer and frontend-engineer to design, implement, and polish a user interface feature from wireframe to final."
 argument-hint: "[UI feature description]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion, TodoWrite
 ---
+
 When this skill is invoked, orchestrate the UI team through a structured pipeline.
 
 **Decision Points:** At each phase transition, use `AskUserQuestion` to present
@@ -13,58 +13,48 @@ full analysis in conversation, then capture the decision with concise labels.
 The user must approve before moving to the next phase.
 
 ## Team Composition
-- **ux-designer** — User flows, wireframes, accessibility, input handling
-- **ui-programmer** — UI framework, screens, widgets, data binding, implementation
-- **art-director** — Visual style, layout polish, consistency with art bible
+- **ux-designer** — User flows, wireframes, accessibility, interaction design
+- **frontend-engineer** — Component implementation, state management, API integration
 
 ## How to Delegate
 
 Use the Task tool to spawn each team member as a subagent:
-- `subagent_type: ux-designer` — User flows, wireframes, accessibility, input handling
-- `subagent_type: ui-programmer` — UI framework, screens, widgets, data binding
-- `subagent_type: art-director` — Visual style, layout polish, art bible consistency
+- `subagent_type: ux-designer` — User flows, wireframes, accessibility, interaction design
+- `subagent_type: frontend-engineer` — Component implementation, state management, API integration
 
-Always provide full context in each agent's prompt (feature requirements, existing UI patterns, platform targets). Launch independent agents in parallel where the pipeline allows it (e.g., Phase 4 review agents can run simultaneously).
+Always provide full context in each agent's prompt (feature requirements, existing UI patterns, platform targets).
 
 ## Pipeline
 
 ### Phase 1: UX Design
 Delegate to **ux-designer**:
-- Define the user flow for this feature (entry points, states, exit points)
+- Define the user flow (entry points, states, exit points)
 - Create wireframes for each screen/state
-- Specify interaction patterns: how does keyboard/mouse AND gamepad navigate this?
-- Define accessibility requirements: text sizes, contrast, colorblind safety
-- Identify data the UI needs to display (what game state does it read?)
+- Specify interaction patterns: how does keyboard and mouse navigate this?
+- Define accessibility requirements: text sizes, contrast, keyboard focus
+- Identify data the UI needs to display (what state does it read?)
 - Output: UX spec with wireframes and interaction map
 
-### Phase 2: Visual Design
-Delegate to **art-director**:
-- Review wireframes against the art bible
-- Define visual treatment: colors, typography, spacing, animations
-- Specify asset requirements (icons, backgrounds, decorative elements)
-- Ensure consistency with existing UI screens
-- Output: visual design spec with style notes
-
-### Phase 3: Implementation
-Delegate to **ui-programmer**:
-- Implement the UI following the UX spec and visual design
-- Ensure UI NEVER owns or modifies game state — display only, events for actions
-- All text through localization system — no hardcoded strings
-- Support both input methods (keyboard/mouse + gamepad)
-- Implement accessibility features (text scaling, colorblind mode support)
-- Wire up data binding to game state
+### Phase 2: Implementation
+Delegate to **frontend-engineer**:
+- Implement the UI following the UX spec
+- UI must NEVER own or modify application state — display only, events for actions
+- All text through i18n system — no hardcoded strings
+- Support keyboard accessibility for all interactive elements
+- Handle loading, error, and empty states explicitly
+- Wire up data binding to application state / API
 - Output: implemented UI feature
 
-### Phase 4: Review (parallel)
+### Phase 3: Review (parallel)
 Delegate in parallel:
-- **ux-designer**: Verify implementation matches wireframes and interaction spec. Test keyboard-only and gamepad-only navigation. Check accessibility.
-- **art-director**: Verify visual consistency with art bible. Check at minimum and maximum supported resolutions.
+- **ux-designer**: Verify implementation matches wireframes and interaction spec. Test keyboard-only navigation. Check accessibility (contrast, focus indicators, ARIA).
+- **frontend-engineer** (self-review): Verify performance (no unnecessary re-renders), bundle impact, cross-browser behavior.
 
-### Phase 5: Polish
+### Phase 4: Polish
 - Address review feedback
-- Verify animations are skippable and respect motion preferences
-- Confirm UI sounds trigger through audio event system
-- Test at all supported resolutions and aspect ratios
+- Verify animations respect `prefers-reduced-motion`
+- Test at all supported viewport sizes and breakpoints
+- Run Lighthouse accessibility audit
 
 ## Output
-A summary report covering: UX spec status, visual design status, implementation status, accessibility compliance, input method support, and any outstanding issues.
+A summary report covering: UX spec status, implementation status, accessibility compliance, and any outstanding issues.

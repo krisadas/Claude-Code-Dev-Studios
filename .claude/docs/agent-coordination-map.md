@@ -5,61 +5,41 @@
 ```
                            [Human Developer]
                                  |
-                 +---------------+---------------+
-                 |               |               |
-         creative-director  technical-director  producer
-                 |               |               |
-        +--------+--------+     |        (coordinates all)
-        |        |        |     |
-  game-designer art-dir  narr-dir  lead-programmer  qa-lead  audio-dir
-        |        |        |         |                |        |
-     +--+--+     |     +--+--+  +--+--+--+--+--+   |        |
-     |  |  |     |     |     |  |  |  |  |  |  |   |        |
-    sys lvl eco  ta   wrt  wrld gp ep  ai net tl ui qa-t    snd
-                                 |
-                             +---+---+
-                             |       |
-                          perf-a   devops   analytics
+                   +-------------+-------------+
+                   |                           |
+           technical-director           product-manager
+                   |                           |
+           lead-programmer          (coordinates all)
+                   |
+        +-----+----+----+-----+
+        |     |         |     |
+      be    fe         net  devops
+                         |
+                   +-----+-----+
+                   |           |
+               perf-a     security
 
-  Additional Leads (report to producer/directors):
-    release-manager         -- Release pipeline, versioning, deployment
-    localization-lead       -- i18n, string tables, translation pipeline
-    prototyper              -- Rapid throwaway prototypes, concept validation
-    security-engineer       -- Anti-cheat, exploits, data privacy, network security
-    accessibility-specialist -- WCAG, colorblind, remapping, text scaling
-    live-ops-designer       -- Seasons, events, battle passes, retention, live economy
-    community-manager       -- Patch notes, player feedback, crisis comms
 
-  Engine Specialists (use the SET matching your engine):
-    unreal-specialist  -- UE5 lead: Blueprint/C++, GAS overview, UE subsystems
-      ue-gas-specialist         -- GAS: abilities, effects, attributes, tags, prediction
-      ue-blueprint-specialist   -- Blueprint: BP/C++ boundary, graph standards, optimization
-      ue-replication-specialist -- Networking: replication, RPCs, prediction, bandwidth
-      ue-umg-specialist         -- UI: UMG, CommonUI, widget hierarchy, data binding
+  Additional Leads (report to technical-director / product-manager):
+    qa-lead              -- Test sign-off, regression suite, quality gate
+    release-manager      -- Release pipeline, versioning, deployment
 
-    unity-specialist   -- Unity lead: MonoBehaviour/DOTS, Addressables, URP/HDRP
-      unity-dots-specialist         -- DOTS/ECS: Jobs, Burst, hybrid renderer
-      unity-shader-specialist       -- Shaders: Shader Graph, VFX Graph, SRP customization
-      unity-addressables-specialist -- Assets: async loading, bundles, memory, CDN
-      unity-ui-specialist           -- UI: UI Toolkit, UGUI, UXML/USS, data binding
-
-    godot-specialist   -- Godot 4 lead: GDScript, node/scene, signals, resources
-      godot-gdscript-specialist    -- GDScript: static typing, patterns, signals, performance
-      godot-shader-specialist      -- Shaders: Godot shading language, visual shaders, VFX
-      godot-gdextension-specialist -- Native: C++/Rust bindings, GDExtension, build systems
+  Specialists:
+    backend-engineer     -- APIs, business logic, databases, auth
+    frontend-engineer    -- UI components, state, API integration
+    network-programmer   -- HTTP, WebSocket, API clients, rate limiting
+    devops-engineer      -- CI/CD, infrastructure, deployment
+    security-engineer    -- Vulnerability review, auth, data privacy
+    ux-designer          -- User flows, wireframes, accessibility design
+    performance-analyst  -- Profiling, bottlenecks, optimization
+    qa-tester            -- Test case execution, edge cases, regression
 ```
 
 ### Legend
 ```
-sys  = systems-designer       gp  = gameplay-programmer
-lvl  = level-designer         ep  = engine-programmer
-eco  = economy-designer       ai  = ai-programmer
-ta   = technical-artist       net = network-programmer
-wrt  = writer                 tl  = tools-programmer
-wrld = world-builder          ui  = ui-programmer
-snd  = sound-designer         qa-t = qa-tester
-narr-dir = narrative-director perf-a = performance-analyst
-art-dir = art-director
+be   = backend-engineer       fe   = frontend-engineer
+net  = network-programmer     devops = devops-engineer
+perf-a = performance-analyst  security = security-engineer
 ```
 
 ## Delegation Rules
@@ -68,37 +48,23 @@ art-dir = art-director
 
 | From | Can Delegate To |
 |------|----------------|
-| creative-director | game-designer, art-director, audio-director, narrative-director |
-| technical-director | lead-programmer, devops-engineer, performance-analyst, technical-artist (technical decisions) |
-| producer | Any agent (task assignment within their domain only) |
-| game-designer | systems-designer, level-designer, economy-designer |
-| lead-programmer | gameplay-programmer, engine-programmer, ai-programmer, network-programmer, tools-programmer, ui-programmer |
-| art-director | technical-artist, ux-designer |
-| audio-director | sound-designer |
-| narrative-director | writer, world-builder |
+| technical-director | lead-programmer, devops-engineer, security-engineer, performance-analyst |
+| product-manager | Any agent (task assignment within their domain only) |
+| lead-programmer | backend-engineer, frontend-engineer, network-programmer |
 | qa-lead | qa-tester |
 | release-manager | devops-engineer (release builds), qa-lead (release testing) |
-| localization-lead | writer (string review), ui-programmer (text fitting) |
-| prototyper | (works independently, reports findings to producer and relevant leads) |
 | security-engineer | network-programmer (security review), lead-programmer (secure patterns) |
-| accessibility-specialist | ux-designer (accessible patterns), ui-programmer (implementation), qa-tester (a11y testing) |
-| [engine]-specialist | engine sub-specialists (delegates subsystem-specific work) |
-| [engine] sub-specialists | (advises all programmers on engine subsystem patterns and optimization) |
-| live-ops-designer | economy-designer (live economy), community-manager (event comms), analytics-engineer (engagement metrics) |
-| community-manager | (works with producer for approval, release-manager for patch note timing) |
 
 ### Escalation Paths
 
 | Situation | Escalate To |
 |-----------|------------|
-| Two designers disagree on a mechanic | game-designer |
-| Game design vs narrative conflict | creative-director |
-| Game design vs technical feasibility | producer (facilitates), then creative-director + technical-director |
-| Art vs audio tonal conflict | creative-director |
+| Two engineers disagree on implementation | lead-programmer |
+| Design vs technical feasibility conflict | product-manager + technical-director |
 | Code architecture disagreement | technical-director |
 | Cross-system code conflict | lead-programmer, then technical-director |
-| Schedule conflict between departments | producer |
-| Scope exceeds capacity | producer, then creative-director for cuts |
+| Schedule conflict between workstreams | product-manager |
+| Scope exceeds capacity | product-manager |
 | Quality gate disagreement | qa-lead, then technical-director |
 | Performance budget violation | performance-analyst flags, technical-director decides |
 
@@ -107,152 +73,97 @@ art-dir = art-director
 ### Pattern 1: New Feature (Full Pipeline)
 
 ```
-1. creative-director  -- Approves feature concept aligns with vision
-2. game-designer      -- Creates design document with full spec
-3. producer           -- Schedules work, identifies dependencies
-4. lead-programmer    -- Designs code architecture, creates interface sketch
-5. [specialist-programmer] -- Implements the feature
-6. technical-artist   -- Implements visual effects (if needed)
-7. writer             -- Creates text content (if needed)
-8. sound-designer     -- Creates audio event list (if needed)
-9. qa-tester          -- Writes test cases
-10. qa-lead           -- Reviews and approves test coverage
-11. lead-programmer   -- Code review
-12. qa-tester         -- Executes tests
-13. producer          -- Marks task complete
+1. product-manager     -- Confirms feature aligns with roadmap and priorities
+2. ux-designer         -- Designs user flow and wireframes
+3. lead-programmer     -- Designs API contract and architecture
+4. backend-engineer    -- Implements API endpoints and business logic
+5. frontend-engineer   -- Implements UI components and data binding
+6. qa-tester           -- Writes test cases
+7. qa-lead             -- Reviews and approves test coverage
+8. lead-programmer     -- Code review
+9. qa-tester           -- Executes tests
+10. product-manager    -- Marks feature complete
 ```
 
 ### Pattern 2: Bug Fix
 
 ```
-1. qa-tester          -- Files bug report with /bug-report
-2. qa-lead            -- Triages severity and priority
-3. producer           -- Assigns to sprint (if not S1)
-4. lead-programmer    -- Identifies root cause, assigns to programmer
-5. [specialist-programmer] -- Fixes the bug
-6. lead-programmer    -- Code review
-7. qa-tester          -- Verifies fix and runs regression
-8. qa-lead            -- Closes bug
+1. qa-tester           -- Files bug report with /bug-report
+2. qa-lead             -- Triages severity and priority
+3. product-manager     -- Assigns to sprint (if not P0)
+4. lead-programmer     -- Identifies root cause, assigns to engineer
+5. [backend/frontend-engineer] -- Fixes the bug
+6. lead-programmer     -- Code review
+7. qa-tester           -- Verifies fix and runs regression
+8. qa-lead             -- Closes bug
 ```
 
-### Pattern 3: Balance Adjustment
+### Pattern 3: Sprint Cycle
 
 ```
-1. analytics-engineer -- Identifies imbalance from data (or player reports)
-2. game-designer      -- Evaluates the issue against design intent
-3. economy-designer   -- Models the adjustment
-4. game-designer      -- Approves the new values
-5. [data file update] -- Change configuration values
-6. qa-tester          -- Regression test affected systems
-7. analytics-engineer -- Monitor post-change metrics
+1. product-manager     -- Plans sprint with /sprint-plan new
+2. [All agents]        -- Execute assigned tasks
+3. product-manager     -- Daily status with /sprint-plan status
+4. qa-lead             -- Continuous testing during sprint
+5. lead-programmer     -- Continuous code review during sprint
+6. product-manager     -- Sprint retrospective with post-sprint hook
+7. product-manager     -- Plans next sprint incorporating learnings
 ```
 
-### Pattern 4: New Area/Level
+### Pattern 4: Milestone Checkpoint
 
 ```
-1. narrative-director -- Defines narrative purpose and beats for the area
-2. world-builder      -- Creates lore and environmental context
-3. level-designer     -- Designs layout, encounters, pacing
-4. game-designer      -- Reviews mechanical design of encounters
-5. art-director       -- Defines visual direction for the area
-6. audio-director     -- Defines audio direction for the area
-7. [implementation by relevant programmers and artists]
-8. writer             -- Creates area-specific text content
-9. qa-tester          -- Tests the complete area
+1. product-manager     -- Runs /milestone-review
+2. technical-director  -- Reviews technical health
+3. qa-lead             -- Reviews quality metrics
+4. product-manager     -- Facilitates go/no-go discussion
+5. [All leads]         -- Agree on scope adjustments if needed
+6. product-manager     -- Documents decisions and updates plans
 ```
 
-### Pattern 5: Sprint Cycle
+### Pattern 5: Release Pipeline
 
 ```
-1. producer           -- Plans sprint with /sprint-plan new
-2. [All agents]       -- Execute assigned tasks
-3. producer           -- Daily status with /sprint-plan status
-4. qa-lead            -- Continuous testing during sprint
-5. lead-programmer    -- Continuous code review during sprint
-6. producer           -- Sprint retrospective with post-sprint hook
-7. producer           -- Plans next sprint incorporating learnings
+1. product-manager     -- Declares release candidate, confirms milestone criteria met
+2. release-manager     -- Cuts release branch, generates /release-checklist
+3. qa-lead             -- Runs full regression, signs off on quality
+4. security-engineer   -- Final security scan
+5. performance-analyst -- Confirms performance benchmarks within targets
+6. devops-engineer     -- Builds release artifacts, runs deployment pipeline
+7. release-manager     -- Generates /changelog, tags release, creates release notes
+8. technical-director  -- Final sign-off on major releases
+9. release-manager     -- Deploys and monitors for 48 hours
+10. product-manager    -- Marks release complete
 ```
 
-### Pattern 6: Milestone Checkpoint
+### Pattern 6: Rapid Prototype
 
 ```
-1. producer           -- Runs /milestone-review
-2. creative-director  -- Reviews creative progress
-3. technical-director -- Reviews technical health
-4. qa-lead            -- Reviews quality metrics
-5. producer           -- Facilitates go/no-go discussion
-6. [All directors]    -- Agree on scope adjustments if needed
-7. producer           -- Documents decisions and updates plans
-```
-
-### Pattern 7: Release Pipeline
-
-```text
-1. producer             -- Declares release candidate, confirms milestone criteria met
-2. release-manager      -- Cuts release branch, generates /release-checklist
-3. qa-lead              -- Runs full regression, signs off on quality
-4. localization-lead    -- Verifies all strings translated, text fitting passes
-5. performance-analyst  -- Confirms performance benchmarks within targets
-6. devops-engineer      -- Builds release artifacts, runs deployment pipeline
-7. release-manager      -- Generates /changelog, tags release, creates release notes
-8. technical-director   -- Final sign-off on major releases
-9. release-manager      -- Deploys and monitors for 48 hours
-10. producer            -- Marks release complete
-```
-
-### Pattern 8: Rapid Prototype
-
-```text
-1. game-designer        -- Defines the hypothesis and success criteria
-2. prototyper           -- Scaffolds prototype with /prototype
-3. prototyper           -- Builds minimal implementation (hours, not days)
-4. game-designer        -- Evaluates prototype against criteria
-5. prototyper           -- Documents findings report
-6. creative-director    -- Go/no-go decision on proceeding to production
-7. producer             -- Schedules production work if approved
-```
-
-### Pattern 9: Live Event / Season Launch
-
-```text
-1. live-ops-designer     -- Designs event/season content, rewards, schedule
-2. game-designer         -- Validates gameplay mechanics for event
-3. economy-designer      -- Balances event economy and reward values
-4. narrative-director    -- Provides seasonal narrative theme
-5. writer                -- Creates event descriptions and lore
-6. producer              -- Schedules implementation work
-7. [implementation by relevant programmers]
-8. qa-lead               -- Test event flow end-to-end
-9. community-manager     -- Drafts event announcement and patch notes
-10. release-manager      -- Deploys event content
-11. analytics-engineer   -- Monitors event participation and metrics
-12. live-ops-designer    -- Post-event analysis and learnings
+1. product-manager     -- Defines the hypothesis and success criteria
+2. lead-programmer     -- Scaffolds prototype with /prototype
+3. [backend/frontend-engineer] -- Builds minimal implementation (hours, not days)
+4. product-manager     -- Evaluates prototype against criteria
+5. lead-programmer     -- Documents findings report
+6. technical-director  -- Go/no-go decision on proceeding to production
+7. product-manager     -- Schedules production work if approved
 ```
 
 ## Cross-Domain Communication Protocols
 
-### Design Change Notification
+### Feature Spec Change Notification
 
-When a design document changes, the game-designer must notify:
+When a feature spec changes, the product-manager must notify:
 - lead-programmer (implementation impact)
 - qa-lead (test plan update needed)
-- producer (schedule impact assessment)
 - Relevant specialist agents depending on the change
 
 ### Architecture Change Notification
 
 When an ADR is created or modified, the technical-director must notify:
 - lead-programmer (code changes needed)
-- All affected specialist programmers
+- All affected specialist engineers
 - qa-lead (testing strategy may change)
-- producer (schedule impact)
-
-### Asset Standard Change Notification
-
-When the art bible or asset standards change, the art-director must notify:
-- technical-artist (pipeline changes)
-- All content creators working with affected assets
-- devops-engineer (if build pipeline is affected)
+- product-manager (schedule impact)
 
 ## Anti-Patterns to Avoid
 

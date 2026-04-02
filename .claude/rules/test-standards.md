@@ -5,38 +5,39 @@ paths:
 
 # Test Standards
 
-- Test naming: `test_[system]_[scenario]_[expected_result]` pattern
+- Test naming: `test_[module]_[scenario]_[expected_result]` pattern
 - Every test must have a clear arrange/act/assert structure
 - Unit tests must not depend on external state (filesystem, network, database)
 - Integration tests must clean up after themselves
 - Performance tests must specify acceptable thresholds and fail if exceeded
 - Test data must be defined in the test or in dedicated fixtures, never shared mutable state
-- Mock external dependencies — tests should be fast and deterministic
+- Mock external dependencies — tests must be fast and deterministic
 - Every bug fix must have a regression test that would have caught the original bug
 
 ## Examples
 
 **Correct** (proper naming + Arrange/Act/Assert):
 
-```gdscript
-func test_health_system_take_damage_reduces_health() -> void:
-    # Arrange
-    var health := HealthComponent.new()
-    health.max_health = 100
-    health.current_health = 100
+```typescript
+test('userService_createUser_withDuplicateEmail_throwsConflictError', async () => {
+  // Arrange
+  const repo = new FakeUserRepository({ existing: [{ email: 'a@b.com' }] })
+  const service = new UserService(repo)
 
-    # Act
-    health.take_damage(25)
+  // Act
+  const result = service.createUser({ email: 'a@b.com', name: 'Alice' })
 
-    # Assert
-    assert_eq(health.current_health, 75)
+  // Assert
+  await expect(result).rejects.toThrow(ConflictError)
+})
 ```
 
 **Incorrect**:
 
-```gdscript
-func test1() -> void:  # VIOLATION: no descriptive name
-    var h := HealthComponent.new()
-    h.take_damage(25)  # VIOLATION: no arrange step, no clear assert
-    assert_true(h.current_health < 100)  # VIOLATION: imprecise assertion
+```typescript
+test('user test', async () => {   // VIOLATION: no descriptive name
+  const s = new UserService(realDb)  // VIOLATION: uses real DB
+  await s.createUser({ email: 'a@b.com', name: 'Alice' })
+  // VIOLATION: no assertion
+})
 ```

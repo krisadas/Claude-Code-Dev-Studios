@@ -15,7 +15,7 @@ relaxed to maximize iteration speed. The goal is learning, not production qualit
 - Singletons and global state
 - Copy-pasted code (no need for abstraction)
 - Debug output left in place
-- Placeholder art and audio
+- Placeholder assets and content
 - Quick-and-dirty solutions
 
 ## What's Still Required

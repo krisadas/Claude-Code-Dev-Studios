@@ -1,18 +1,18 @@
 <p align="center">
-  <h1 align="center">Claude Code Game Studios</h1>
+  <h1 align="center">Claude Code Software Studios</h1>
   <p align="center">
-    Turn a single Claude Code session into a full game development studio.
+    Turn a single Claude Code session into a full software development studio.
     <br />
-    48 agents. 37 workflows. One coordinated AI team.
+    13 agents. Structured workflows. One coordinated AI team.
   </p>
 </p>
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"></a>
-  <a href=".claude/agents"><img src="https://img.shields.io/badge/agents-48-blueviolet" alt="48 Agents"></a>
-  <a href=".claude/skills"><img src="https://img.shields.io/badge/skills-37-green" alt="37 Skills"></a>
+  <a href=".claude/agents"><img src="https://img.shields.io/badge/agents-13-blueviolet" alt="13 Agents"></a>
+  <a href=".claude/skills"><img src="https://img.shields.io/badge/skills-28-green" alt="28 Skills"></a>
   <a href=".claude/hooks"><img src="https://img.shields.io/badge/hooks-8-orange" alt="8 Hooks"></a>
-  <a href=".claude/rules"><img src="https://img.shields.io/badge/rules-11-red" alt="11 Rules"></a>
+  <a href=".claude/rules"><img src="https://img.shields.io/badge/rules-9-red" alt="9 Rules"></a>
   <a href="https://docs.anthropic.com/en/docs/claude-code"><img src="https://img.shields.io/badge/built%20for-Claude%20Code-f5f5f5?logo=anthropic" alt="Built for Claude Code"></a>
   <a href="https://ko-fi.com/donchitos"><img src="https://img.shields.io/badge/Ko--fi-Support%20this%20project-ff5e5b?logo=ko-fi&logoColor=white" alt="Ko-fi"></a>
 </p>
@@ -21,9 +21,9 @@
 
 ## Why This Exists
 
-Building a game solo with AI is powerful — but a single chat session has no structure. No one stops you from hardcoding magic numbers, skipping design docs, or writing spaghetti code. There's no QA pass, no design review, no one asking "does this actually fit the game's vision?"
+Building software solo with AI is powerful — but a single chat session has no structure. No one stops you from hardcoding secrets, skipping API specs, or writing spaghetti code. There's no QA pass, no design review, no one asking "does this actually fit the product's vision?"
 
-**Claude Code Game Studios** solves this by giving your AI session the structure of a real studio. Instead of one general-purpose assistant, you get 48 specialized agents organized into a studio hierarchy — directors who guard the vision, department leads who own their domains, and specialists who do the hands-on work. Each agent has defined responsibilities, escalation paths, and quality gates.
+**Claude Code Software Studios** solves this by giving your AI session the structure of a real studio. Instead of one general-purpose assistant, you get 13 specialized agents organized into a studio hierarchy — directors who guard the vision, department leads who own their domains, and specialists who do the hands-on work. Each agent has defined responsibilities, escalation paths, and quality gates.
 
 The result: you still make every decision, but now you have a team that asks the right questions, catches mistakes early, and keeps your project organized from first brainstorm to launch.
 
@@ -50,67 +50,50 @@ The result: you still make every decision, but now you have a team that asks the
 
 | Category | Count | Description |
 |----------|-------|-------------|
-| **Agents** | 48 | Specialized subagents across design, programming, art, audio, narrative, QA, and production |
-| **Skills** | 37 | Slash commands for common workflows (`/start`, `/sprint-plan`, `/code-review`, `/brainstorm`, etc.) |
+| **Agents** | 13 | Specialized subagents across product, engineering, design, QA, and ops |
+| **Skills** | 28 | Slash commands for common workflows (`/start`, `/sprint-plan`, `/code-review`, `/brainstorm`, etc.) |
 | **Hooks** | 8 | Automated validation on commits, pushes, asset changes, session lifecycle, agent audit, and gap detection |
-| **Rules** | 11 | Path-scoped coding standards enforced when editing gameplay, engine, AI, UI, network code, and more |
-| **Templates** | 29 | Document templates for GDDs, ADRs, sprint plans, economy models, faction design, and more |
+| **Rules** | 9 | Path-scoped coding standards enforced when editing core, AI, UI, network code, feature specs, and more |
+| **Templates** | 29 | Document templates for feature specs, ADRs, sprint plans, release notes, and more |
 
 ## Studio Hierarchy
 
 Agents are organized into three tiers, matching how real studios operate:
 
 ```
-Tier 1 — Directors (Opus)
-  creative-director    technical-director    producer
+Tier 1 — Leadership (Opus)
+  technical-director    product-manager
 
 Tier 2 — Department Leads (Sonnet)
-  game-designer        lead-programmer       art-director
-  audio-director       narrative-director    qa-lead
-  release-manager      localization-lead
+  lead-programmer       qa-lead       release-manager
 
 Tier 3 — Specialists (Sonnet/Haiku)
-  gameplay-programmer  engine-programmer     ai-programmer
-  network-programmer   tools-programmer      ui-programmer
-  systems-designer     level-designer        economy-designer
-  technical-artist     sound-designer        writer
-  world-builder        ux-designer           prototyper
-  performance-analyst  devops-engineer       analytics-engineer
-  security-engineer    qa-tester             accessibility-specialist
-  live-ops-designer    community-manager
+  backend-engineer      frontend-engineer     network-programmer
+  devops-engineer       security-engineer     ux-designer
+  performance-analyst   qa-tester
 ```
-
-### Engine Specialists
-
-The template includes agent sets for all three major engines. Use the set that matches your project:
-
-| Engine | Lead Agent | Sub-Specialists |
-|--------|-----------|-----------------|
-| **Godot 4** | `godot-specialist` | GDScript, Shaders, GDExtension |
-| **Unity** | `unity-specialist` | DOTS/ECS, Shaders/VFX, Addressables, UI Toolkit |
-| **Unreal Engine 5** | `unreal-specialist` | GAS, Blueprints, Replication, UMG/CommonUI |
 
 ## Slash Commands
 
-Type `/` in Claude Code to access all 37 skills:
+Type `/` in Claude Code to access all 28 skills:
 
 **Reviews & Analysis**
-`/design-review` `/code-review` `/balance-check` `/asset-audit` `/scope-check` `/perf-profile` `/tech-debt`
+`/design-review` `/code-review` `/scope-check` `/perf-profile` `/tech-debt`
 
 **Production**
 `/sprint-plan` `/milestone-review` `/estimate` `/retrospective` `/bug-report`
 
 **Project Management**
-`/start` `/project-stage-detect` `/reverse-document` `/gate-check` `/map-systems` `/design-system`
+`/start` `/project-stage-detect` `/reverse-document` `/gate-check` `/design-system`
 
 **Release**
 `/release-checklist` `/launch-checklist` `/changelog` `/patch-notes` `/hotfix`
 
 **Creative**
-`/brainstorm` `/playtest-report` `/prototype` `/onboard` `/localize`
+`/brainstorm` `/prototype` `/onboard` `/localize`
 
 **Team Orchestration** (coordinate multiple agents on a single feature)
-`/team-combat` `/team-narrative` `/team-ui` `/team-release` `/team-polish` `/team-audio` `/team-level`
+`/team-ui` `/team-release` `/team-polish`
 
 ## Getting Started
 
@@ -126,8 +109,8 @@ All hooks fail gracefully if optional tools are missing — nothing breaks, you 
 
 1. **Clone or use as template**:
    ```bash
-   git clone https://github.com/Donchitos/Claude-Code-Game-Studios.git my-game
-   cd my-game
+   git clone https://github.com/Donchitos/Claude-Code-Software-Studios.git my-project
+   cd my-project
    ```
 
 2. **Open Claude Code** and start a session:
@@ -139,8 +122,8 @@ All hooks fail gracefully if optional tools are missing — nothing breaks, you 
    clear design, existing work) and guides you to the right workflow. No assumptions.
 
    Or jump directly to a specific skill if you already know what you need:
-   - `/brainstorm` — explore game ideas from scratch
-   - `/setup-engine godot 4.6` — configure your engine if you already know
+   - `/brainstorm` — explore product ideas from scratch
+   - `/design-system <feature>` — spec out a feature if you already know what to build
    - `/project-stage-detect` — analyze an existing project
 
 ## Upgrading
@@ -155,19 +138,19 @@ versions, and which files are safe to overwrite vs. which need a manual merge.
 CLAUDE.md                           # Master configuration
 .claude/
   settings.json                     # Hooks, permissions, safety rules
-  agents/                           # 48 agent definitions (markdown + YAML frontmatter)
-  skills/                           # 37 slash commands (subdirectory per skill)
+  agents/                           # 13 agent definitions (markdown + YAML frontmatter)
+  skills/                           # 28 slash commands (subdirectory per skill)
   hooks/                            # 8 hook scripts (bash, cross-platform)
-  rules/                            # 11 path-scoped coding standards
+  rules/                            # 9 path-scoped coding standards
   docs/
     quick-start.md                  # Detailed usage guide
     agent-roster.md                 # Full agent table with domains
     agent-coordination-map.md       # Delegation and escalation paths
     setup-requirements.md           # Prerequisites and platform notes
-    templates/                      # 28 document templates
-src/                                # Game source code
-assets/                             # Art, audio, VFX, shaders, data files
-design/                             # GDDs, narrative docs, level designs
+    templates/                      # Document templates
+src/                                # Application source code
+assets/                             # Static assets and data files
+design/                             # Feature specs and product documentation
 docs/                               # Technical documentation and ADRs
 tests/                              # Test suites
 tools/                              # Build and pipeline tools
@@ -181,10 +164,10 @@ production/                         # Sprint plans, milestones, release tracking
 
 Agents follow a structured delegation model:
 
-1. **Vertical delegation** — directors delegate to leads, leads delegate to specialists
+1. **Vertical delegation** — leadership delegates to leads, leads delegate to specialists
 2. **Horizontal consultation** — same-tier agents can consult each other but can't make binding cross-domain decisions
-3. **Conflict resolution** — disagreements escalate up to the shared parent (`creative-director` for design, `technical-director` for technical)
-4. **Change propagation** — cross-department changes are coordinated by `producer`
+3. **Conflict resolution** — disagreements escalate up to the shared parent (`product-manager` for scope/design, `technical-director` for technical)
+4. **Change propagation** — cross-department changes are coordinated by `product-manager`
 5. **Domain boundaries** — agents don't modify files outside their domain without explicit delegation
 
 ### Collaborative, Not Autonomous
@@ -222,24 +205,24 @@ Coding standards are automatically enforced based on file location:
 
 | Path | Enforces |
 |------|----------|
-| `src/gameplay/**` | Data-driven values, delta time usage, no UI references |
-| `src/core/**` | Zero allocations in hot paths, thread safety, API stability |
-| `src/ai/**` | Performance budgets, debuggability, data-driven parameters |
-| `src/networking/**` | Server-authoritative, versioned messages, security |
-| `src/ui/**` | No game state ownership, localization-ready, accessibility |
-| `design/gdd/**` | Required 8 sections, formula format, edge cases |
+| `src/core/**` | Dependency direction, graceful degradation, thread safety, no global mutable state |
+| `src/ai/**` | Model parameter safety, PII protection, rate limiting, audit trail |
+| `src/networking/**` | TLS, rate limiting, auth tokens never logged, API versioning |
+| `src/ui/**` | No app state ownership, i18n strings, accessibility (WCAG 2.1 AA) |
+| `design/features/**` | Required 8 sections, data models, acceptance criteria |
 | `tests/**` | Test naming, coverage requirements, fixture patterns |
 | `prototypes/**` | Relaxed standards, README required, hypothesis documented |
+| `assets/data/**`, `config/**` | Schema validation, no secrets, change tracking |
 
 ## Design Philosophy
 
-This template is grounded in professional game development practices:
+This template is grounded in professional software development practices:
 
-- **MDA Framework** — Mechanics, Dynamics, Aesthetics analysis for game design
-- **Self-Determination Theory** — Autonomy, Competence, Relatedness for player motivation
-- **Flow State Design** — Challenge-skill balance for player engagement
-- **Bartle Player Types** — Audience targeting and validation
+- **Jobs-to-be-Done** — Problem-first thinking before solution design
+- **API-First Design** — Contract-first development with OpenAPI specs
 - **Verification-Driven Development** — Tests first, then implementation
+- **Defense in Depth** — Security at every layer (input validation, auth, secrets management)
+- **Collaborative Protocol** — Question → Options → Decision → Draft → Approval
 
 ## Customization
 
@@ -250,7 +233,7 @@ This is a **template**, not a locked framework. Everything is meant to be custom
 - **Modify skills** — adjust workflows to match your team's process
 - **Add rules** — create new path-scoped rules for your project's directory structure
 - **Tune hooks** — adjust validation strictness, add new checks
-- **Pick your engine** — use the Godot, Unity, or Unreal agent set (or none)
+- **Configure your stack** — update `.claude/docs/technical-preferences.md` with your chosen frameworks
 
 ## Platform Support
 
@@ -258,8 +241,8 @@ Tested on **Windows 10** with Git Bash. All hooks use POSIX-compatible patterns 
 
 ## Community
 
-- **Discussions** — [GitHub Discussions](https://github.com/Donchitos/Claude-Code-Game-Studios/discussions) for questions, ideas, and showcasing what you've built
-- **Issues** — [Bug reports and feature requests](https://github.com/Donchitos/Claude-Code-Game-Studios/issues)
+- **Discussions** — [GitHub Discussions](https://github.com/Donchitos/Claude-Code-Software-Studios/discussions) for questions, ideas, and showcasing what you've built
+- **Issues** — [Bug reports and feature requests](https://github.com/Donchitos/Claude-Code-Software-Studios/issues)
 
 ---
 
